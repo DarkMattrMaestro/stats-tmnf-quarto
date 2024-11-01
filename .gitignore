@@ -1,0 +1,5 @@
+# Quarto rendering
+/_freeze
+/_manuscript
+/.quarto
+/.quarto/

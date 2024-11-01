@@ -1,0 +1,184 @@
+---
+title: Classification de toute allure!
+subtitle: Une analyse de la relation entre l’étiquette et le cheminement de circuits dans Trackmania Nations Forever utilisant la classification
+highlight-style: github
+authors:
+  - name: Nicolas Kmita
+    affiliation: École secondaire Franco-Cité
+bibliography:
+  - references.bib
+  - packages.bib
+nocite: |
+  @*
+notebook-links: false
+lang: fr
+format:
+  titlepage-pdf:
+    include-in-header:
+      - text: |
+          \usepackage{xcolor}
+      - macros.tex
+    documentclass: scrbook
+    classoption: ["oneside", "open=any"]
+    number-sections: true
+    toc: true
+    toc-title: "Table des matières"
+    lof: false
+    lot: false
+    titlepage: classic-lined 
+    titlepage-logo: "img/car-jump.png"
+    titlepage-theme:
+      elements: ["\\titleblock", "\\authorblock", "\\logoblock", "\\footerblock"]
+      page-align: "center"
+      title-style: "doublelinewide"
+      title-fontsize: 30
+      title-fontstyle: "uppercase"
+      title-space-after: "0.1\\textheight"
+      subtitle-fontstyle: ["Large", "textit"]
+      author-style: "plain"
+      author-sep: "\\hskip1em"
+      author-fontstyle: "Large"
+      author-space-after: "2\\baselineskip"
+      affiliation-style: "numbered-list-with-correspondence"
+      affiliation-fontstyle: "large"
+      affiliation-space-after: "0pt"
+      footer-style: "plain"
+      footer-fontstyle: ["large", "textsc"]
+      footer-space-after: "0pt"
+      logo-size: "0.7\\textheight"
+      logo-space-after: "1cm"
+    titlepage-footer: |
+      M. Chabot\
+      MDM4U\
+      25 octobre 2024\
+    keep-tex: true
+---
+
+```{r}
+# Préparation de librairies et installations variés
+
+cran_mirror <- "https://mirror.csclub.uwaterloo.ca/CRAN/"
+
+pkgs <- c(
+  "tidyverse",
+  "ggbeeswarm", # Génère des graphique d'essaim d'abeille
+  "viridis", # Couleurs pouvant être mieux perçus
+  "kableExtra",
+  "rmarkdown",
+  "knitr", # Tableaux
+  "tinytex"
+)
+
+# Charger les « packages » et, s'ils ne sont pas installés, les installer du mirroir de CRAN indiqué ci-haut (UWaterloo par défaut).
+for(pkg in pkgs) {
+  # Voir https://stackoverflow.com/questions/4090169/elegant-way-to-check-for-missing-packages-and-install-them
+
+  if(require(pkg, character.only=TRUE)){
+    next
+  }
+
+  install.packages(pkg, repos=cran_mirror)
+  library(pkg, character.only=TRUE)
+}
+
+# Assurer la présence de TinyTeX
+if (nchar(tinytex_root()) <= 0) {
+  install_tinytex()
+}
+
+# Génération de citations
+knitr::write_bib(pkgs, prefix="", file="packages.bib", tweak=FALSE)
+```
+
+```{r}
+# Assurer l'utilisation des virgules par les sorties
+
+inline_hook_old <- knit_hooks$get("inline")
+
+format_d <- function(x) {
+  if (is.numeric(x)) {
+    return(str_replace_all(str_replace_all(sprintf("%.2f", x), "[.]", ","), ",00", ""))
+  }
+
+  return(x)
+}
+
+kable_fr <- function(x, ...) {
+  # Alignement selon la type de valeur
+  alignment <- ""
+  for(i in 1:ncol(x)) {
+    if (is.numeric(x[,i])) {
+      alignment <- paste(alignment, "r", sep="")
+    } else {
+      alignment <- paste(alignment, "l", sep="")
+    }
+  }
+
+  x %>%
+    mutate_all(~format_d(.)) %>%
+    kable(align=alignment, "pipe", ...)
+}
+
+decimal_hook <- function (x) {
+  if (is.numeric(x) | is.double(x) | is.integer(x)) {
+    # Si un entier, imprimer sans ponctuation decimale; autrement ajouter deux chiffres décimaux
+    res <- ifelse(x == round(x),
+      sprintf("%d", x),
+      str_replace_all(sprintf("%.2f", x), "[.]", ",")
+    )
+    paste(res, collapse = ", ")
+  } else {
+    inline_hook_old(x)
+  }
+}
+
+knit_hooks$set(inline = decimal_hook)
+```
+
+```{r}
+# Préparation aesthétique
+
+theme_set(theme_classic())
+
+# Échellex de couleur
+
+
+# Utilisation d'une graine aléatoire déterminée
+set.seed(3142)
+
+```
+
+```{r}
+# Fonctions générales
+
+# Mode pour les facteurs
+Mode <- function(x) {
+  ux <- unique(x)
+  return(ux[which.max(tabulate(match(x, ux)))])
+}
+```
+
+# Introduction
+
+`{r} 123.4567`
+
+# Méthodes
+
+
+
+# Résultats
+
+
+
+# Discussion
+
+
+
+# Conclusion
+
+
+
+# Références
+
+::: {#refs}
+:::
