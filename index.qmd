@@ -82,7 +82,8 @@ pkgs <- c(
   "rmarkdown",
   "knitr", # Tableaux
   "tinytex",
-  "reshape"
+  "reshape",
+  "ggh4x"
 )
 
 # Charger les « packages » et, s'ils ne sont pas installés, les installer du mirroir de CRAN indiqué ci-haut (UWaterloo par défaut).
@@ -209,7 +210,11 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 #| fig-align: 'center'
 #| layout-nrow: 1
 
-flat_data_long <- gather(flat_data, key="measure", value="value", colnames(flat_data)[!(colnames(flat_data) %in% c("Tag"))])
+facet_ordered_colnames <- c("AvgAbsDisplacementHorizontal","AvgAbsDisplacementY","AvgRPM","AvgSteerBias","AvgAbsSteer","AvgSpeedForward","AvgAbsSpeedForward","AvgSpeedSidewardBias","AvgAbsSpeedSideward","AvgSpeedSidewardOppSteer","PercentPitchLowerThird","PercentRollLowerThird","PercentPitchMiddleThird","PercentRollMiddleThird","PercentPitchUpperThird","PercentRollUpperThird","PercentTurbo")
+
+facet_ordered_colours <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, "#ffb3b333", "#b3dfff33", "#ffb3b333", "#b3dfff33", "#ffb3b333", "#b3dfff33", NA)
+
+flat_data_long <- gather(flat_data, key="measure", value="value", facet_ordered_colnames)# colnames(flat_data)[!(colnames(flat_data) %in% c("Tag"))])
 
 dfTab <- flat_data_long %>% group_by(Tag, measure) %>%
   summarize(
@@ -221,11 +226,30 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
   # Diagrammes
   # geom_boxplot() +
   # geom_quasirandom(width = 0.2, alpha = 0.2, size=0.2) +
-  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), size=0.2, colour="black", fill = NA, scale="width") + # TODO: Find more representative scale type
-  facet_wrap(~measure, scales="free_y", ncol=2) +
+  geom_violin(
+    draw_quantiles = c(0.25, 0.5, 0.75),
+    size=0.2,
+    colour="black",
+    fill = NA,
+    scale="width"
+  ) + # TODO: Find more representative scale type
+  facet_wrap2(
+    ~forcats::fct_relevel(measure, facet_ordered_colnames),
+    scales="free_y",
+    ncol=2,
+    strip=strip_themed(
+      background_x = elem_list_rect(fill = facet_ordered_colours)
+    )
+  ) +
 
   # # Écart type / barres d'érreure
-  geom_errorbar(data=dfTab, aes(x=Tag, y=mean, ymin=mean-sd, ymax=mean+sd), width=.2, linewidth=.2, colour="red") +
+  geom_errorbar(
+    data=dfTab,
+    aes(x=Tag, y=mean, ymin=mean-sd, ymax=mean+sd),
+    width=.2,
+    linewidth=.2,
+    colour="red"
+  ) +
   geom_point(data=dfTab, aes(x=Tag, y=mean), size=0.3, colour="red") +
   # # Anotation de l'écart type
   # geom_text(data=dfTab,aes(x=species,y=y,parse=FALSE,label=sprintf("s = %.2f", dfTab$sd)),vjust=0) +
