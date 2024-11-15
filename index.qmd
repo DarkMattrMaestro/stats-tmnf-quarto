@@ -17,6 +17,7 @@ format:
     include-in-header:
       - text: |
           \usepackage{xcolor}
+          \usepackage{lipsum}
       - macros.tex
     documentclass: scrbook
     classoption: ["oneside", "open=any"]
@@ -178,7 +179,7 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 
 # Méthodes
 
-
+\lipsum
 
 # Résultats
 
