@@ -66,7 +66,8 @@ pkgs <- c(
   "kableExtra",
   "rmarkdown",
   "knitr", # Tableaux
-  "tinytex"
+  "tinytex",
+  "reshape"
 )
 
 # Charger les « packages » et, s'ils ne sont pas installés, les installer du mirroir de CRAN indiqué ci-haut (UWaterloo par défaut).
@@ -80,6 +81,7 @@ for(pkg in pkgs) {
   install.packages(pkg, repos=cran_mirror)
   library(pkg, character.only=TRUE)
 }
+# update.packages(ask = FALSE, repos=cran_mirror)
 
 # Assurer la présence de TinyTeX
 if (nchar(tinytex_root()) <= 0) {
@@ -158,6 +160,18 @@ Mode <- function(x) {
 }
 ```
 
+```{r}
+#| echo: FALSE
+
+flat_data <- read.csv("./collected-data/flat-replay-data-100per.csv", header=TRUE)
+
+flat_data_min <- apply(flat_data, 2, min)
+flat_data_max <- apply(flat_data, 2, max)
+
+norm2 <- function(x, na.rm = FALSE) (x - min(x, na.rm = na.rm)) / (max(x, na.rm = na.rm) - min(x, na.rm = na.rm))
+normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
+```
+
 # Introduction
 
 `{r} 123.4567`
@@ -168,7 +182,112 @@ Mode <- function(x) {
 
 # Résultats
 
+```{r}
+#| label: fig-violin
+#| echo: FALSE
+#| fig-cap: "Distributions des variables quantitatives continues des pingouins Palmer selon l'espèce. Les barres rouges indiquent l'allonge de l'écart type, les lignes noires horizontales de chaque violon indiquent les quartiles, et les points rouges sont les moyennes."
+#| fig-subcap:
+#|    - "Longueurs de becs des pingouins Palmer selon l'espèce."
+#| out-width: '100%'
+#| out-height: '100%'
+#| fig-align: 'center'
+#| layout-nrow: 1
 
+# dfTab <- flat_data %>% group_by(species) %>%
+#   summarize(
+#     y = max(bill_length_mm) + 1,
+#     mean = mean(bill_length_mm),
+#     sd = round(sd(bill_length_mm), digits = 2)
+#   )
+
+library(reshape)
+meltData <- melt(normalized_flat_data)
+# boxplot(data=meltData, value~variable)
+
+non_tag_names <- c("AvgAbsDisplacementHorizontal","AvgAbsDisplacementY","AvgRPM","AvgSteerBias","AvgAbsSteer","AvgSpeedForward","AvgAbsSpeedForward")#,"AvgSpeedSidewardBias","AvgAbsSpeedSideward","AvgSpeedSidewardOppSteer","PercentPitchLowerThird","PercentPitchMiddleThird","PercentPitchUpperThird","PercentRollLowerThird","PercentRollMiddleThird","PercentRollUpperThird","PercentTurbo")
+
+flat_data_long <- gather(flat_data, key="measure", value="value", non_tag_names)
+
+ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
+  # Diagrammes
+  # geom_boxplot() +
+  geom_quasirandom(width = 0.2, alpha = 0.2, size=0.2) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), size=0.2, colour="red", fill = NA, scale="count") +
+  facet_wrap(~measure, scales="free_y", ncol=1) +
+
+  # # Écart type / barres d'érreure
+  # geom_errorbar(data=dfTab, aes(x=species, y=mean, ymin=mean-sd, ymax=mean+sd), width=.2, linewidth=.3, colour="red") +
+  # geom_point(data=dfTab, aes(x=species, y=mean), size=0.5, colour="red") +
+  # # Anotation de l'écart type
+  # geom_text(data=dfTab,aes(x=species,y=y,parse=FALSE,label=sprintf("s = %.2f", dfTab$sd)),vjust=0) +
+
+  # Thèmes
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+    # legend.position = c(0.10, 0.80),
+    # legend.background = element_rect(colour = "black")
+  )
+
+  # Anotations
+  # labs(
+  #   title = "Longueurs de becs par rapport à l'espèce",
+  #   x = "Espèce",
+  #   y = "Longueur du bec (mm)",
+  #   colour = "Sexe"
+  # )
+
+```
+
+<!-- ```{r}
+#| label: fig-violin
+#| echo: FALSE
+#| fig-cap: "Distributions des variables quantitatives continues des pingouins Palmer selon l'espèce. Les barres rouges indiquent l'allonge de l'écart type, les lignes noires horizontales de chaque violon indiquent les quartiles, et les points rouges sont les moyennes."
+#| fig-subcap:
+#|    - "Longueurs de becs des pingouins Palmer selon l'espèce."
+#| out-width: '100%'
+#| fig-align: 'center'
+#| layout-nrow: 1
+
+# dfTab <- flat_data %>% group_by(species) %>%
+#   summarize(
+#     y = max(bill_length_mm) + 1,
+#     mean = mean(bill_length_mm),
+#     sd = round(sd(bill_length_mm), digits = 2)
+#   )
+
+library(reshape)
+meltData <- melt(normalized_flat_data)
+# boxplot(data=meltData, value~variable)
+
+ggplot(meltData, aes(factor(variable), value)) +
+  # Diagrammes
+  # geom_boxplot() +
+  geom_quasirandom(width = 0.2, alpha = 0.2) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75), colour="red", fill = NA, scale="count") +
+  facet_grid(rows = meltData$Tag) +
+
+  # # Écart type / barres d'érreure
+  # geom_errorbar(data=dfTab, aes(x=species, y=mean, ymin=mean-sd, ymax=mean+sd), width=.2, linewidth=.3, colour="red") +
+  # geom_point(data=dfTab, aes(x=species, y=mean), size=0.5, colour="red") +
+  # # Anotation de l'écart type
+  # geom_text(data=dfTab,aes(x=species,y=y,parse=FALSE,label=sprintf("s = %.2f", dfTab$sd)),vjust=0) +
+
+  # Thèmes
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)
+    # legend.position = c(0.10, 0.80),
+    # legend.background = element_rect(colour = "black")
+  ) +
+
+  # Anotations
+  labs(
+    title = "Longueurs de becs par rapport à l'espèce",
+    x = "Espèce",
+    y = "Longueur du bec (mm)",
+    colour = "Sexe"
+  )
+
+``` -->
 
 # Discussion
 
