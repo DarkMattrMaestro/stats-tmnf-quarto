@@ -69,6 +69,10 @@ format:
     indent: false
 ---
 
+```
+
+```
+
 ```{r}
 # Préparation de librairies et installations variés
 
@@ -83,7 +87,8 @@ pkgs <- c(
   "knitr", # Tableaux
   "tinytex",
   "reshape",
-  "ggh4x"
+  "ggh4x",
+  "reticulate"
 )
 
 # Charger les « packages » et, s'ils ne sont pas installés, les installer du mirroir de CRAN indiqué ci-haut (UWaterloo par défaut).
@@ -271,6 +276,24 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 ```
 
 {{< pagebreak >}}
+
+```{python}
+
+import pandas as pd
+
+flat_data = pd.read_csv('./collected-data/flat-replay-data-100per.csv')
+flat_data.head()
+
+X = flat_data.drop('Tag', axis = 1)
+Y = flat_data['Tag']
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.15, stratify = Y, random_state=2022)
+logistic_classifier = LogisticRegression()
+logistic_classifier.fit(X_train, Y_train)
+Y_pred = logistic_classifier.predict(X_test)
+print(confusion_matrix(Y_test,Y_pred))
+print(classification_report(Y_test,Y_pred))
+
+```
 
 # Discussion
 
