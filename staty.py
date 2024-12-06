@@ -1,4 +1,6 @@
 
+import math
+import random
 import sklearn
 import numpy as np
 import pandas as pd
@@ -9,18 +11,24 @@ import shap
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.linear_model import LogisticRegression
+
+from staty_base import stratified_train_test_split
 
 ###################################
+#### Sauvegardement des modèles ###
 
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+import joblib
 
 ###################################
 
 # Constants
 FILE_NAME = "./collected-data/flat-replay-data-5rep.csv"
-SEED = 19842
+MODEL_STORARE_DIR = "./models/"
+SEED = 3142
+TEST_SIZE = 0.25
+
+print("Loading Dataset...")
 
 # load data
 full_dataset = pd.read_csv(FILE_NAME) # For Pandas
@@ -45,24 +53,21 @@ mappingNumToCat = {
 dataset = full_dataset.copy()
 
 dataset['Tag'] = dataset['Tag'].replace(mappingNumToCat) # Map to categorical
-  # if removed is not None: dataset = dataset.drop(removed, axis=1)
-  # print(dataset.head)
 
 print(dataset)
 
 # split data into X and y
 X, y = dataset.drop("Tag", axis=1), dataset[['Tag']] # For Pandas
-# X = dataset[:,1:]
-# y = dataset[:,0]
 
 # Encode y to numeric
 y_encoded = OrdinalEncoder().fit_transform(y)
 
-# split data into train and test sets
-# test_size = 0.15
-
 # Split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, random_state=SEED, stratify=y_encoded)
+# X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, random_state=SEED, stratify=y_encoded, test_size=0.2)
+
+# Split dataset into training and testing datasets
+
+X_train, y_train, X_test, y_test = stratified_train_test_split(y_encoded, X)
 
 # Dummy model #####################################
 
@@ -70,6 +75,8 @@ if True:
   print("\nStart dummy model")
   dummy_model = sklearn.dummy.DummyClassifier()
   dummy_model.fit(X, y_encoded)
+  
+  joblib.dump(dummy_model, MODEL_STORARE_DIR + "dummy_model.pkl") # Sauvegarde le modèle
   
   y_pred = dummy_model.predict(X_test)
   print(sklearn.metrics.confusion_matrix(y_test, y_pred))
@@ -86,6 +93,9 @@ if True:
   
   logistic_classifier = LogisticRegression(max_iter=10000, solver="liblinear")
   logistic_classifier.fit(X_train, y_train)
+  
+  joblib.dump(logistic_classifier, MODEL_STORARE_DIR + "logistic_regression_model.pkl") # Sauvegarde le modèle
+  
   y_pred = logistic_classifier.predict(X_test)
   print(sklearn.metrics.confusion_matrix(y_test, y_pred))
   print(sklearn.metrics.classification_report(y_test, y_pred))
@@ -119,7 +129,7 @@ if True:
   results = xgb.cv(
     params, dtrain_clf,
     num_boost_round=n_rounds,
-    nfold=2,
+    nfold=4,
     metrics=["mlogloss", "auc", "merror"]
   )
 
@@ -139,6 +149,8 @@ if True:
     early_stopping_rounds=10,
     verbose_eval=10,
   )
+
+  joblib.dump(model, MODEL_STORARE_DIR + "xgboost_model.pkl") # Sauvegarde le modèle
 
   y_pred = model.predict(dtest_clf)
 
@@ -168,4 +180,5 @@ if True:
   shap_values = explainer.shap_values(X)
 
   # Show a summary of feature importance
-  shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_type="bar", max_display=5)
+  # shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_type="bar", max_display=5)
+  shap.summary_plot(shap_values, features=X, feature_names=X.columns)
