@@ -219,6 +219,7 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 #| fig-align: 'center'
 #| layout-nrow: 1
 
+# TODO: Add units
 facet_ordered_colnames <- c("AvgAbsDisplacementHorizontal","AvgAbsDisplacementY","AvgRPM","AvgSteerBias","AvgAbsSteer","AvgSpeedForward","AvgAbsSpeedForward","AvgSpeedSidewardBias","AvgAbsSpeedSideward","AvgSpeedSidewardOppSteer","PercentPitchLowerThird","PercentRollLowerThird","PercentPitchMiddleThird","PercentRollMiddleThird","PercentPitchUpperThird","PercentRollUpperThird","PercentTurbo")
 
 facet_ordered_colours <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, "#ffb3b333", "#b3dfff33", "#ffb3b333", "#b3dfff33", "#ffb3b333", "#b3dfff33", NA)
@@ -287,7 +288,7 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 
 ![Les matrices de confusion des trois modèles statistiques utilisés: un simulacre simple, une régression logistique, et un amplification de gradients (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
 
-![................](rendered-figs/fig-bar.pdf){#fig-importance-bar out-width=100% fig-align='center'}
+![La moyenne absolue des valeurs SHAP de chaque variable indépendante.](rendered-figs/fig-bar.pdf){#fig-importance-bar out-width=100% fig-align='center'}
 
 ![Les corrélations entre la valeur SHAP et la valeur de chaque variable. Les barres grises indiquent la dansité.](rendered-figs/fig-scatter.pdf){#fig-scatter out-width=100% fig-align='center'}
 
