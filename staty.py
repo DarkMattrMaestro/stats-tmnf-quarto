@@ -164,10 +164,7 @@ if True:
   percent_correct = count_correct / len(y_test)
 
   print("XGBoost %: ", percent_correct)
-
-
-
-
+  
   # Compute shap values using GPU with xgboost
   model.set_param({"device": "cuda"})
   shap_values = model.predict(dtrain_clf, pred_contribs=True)
@@ -177,8 +174,9 @@ if True:
 
   # shap will call the GPU accelerated version as long as the device parameter is set to "cuda"
   explainer = shap.TreeExplainer(model)
-  shap_values = explainer.shap_values(X)
+  shap_values = explainer.shap_values(X_test)
 
   # Show a summary of feature importance
   # shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_type="bar", max_display=5)
-  shap.summary_plot(shap_values, features=X, feature_names=X.columns)
+  # shap.summary_plot(shap_values, features=X, feature_names=X.columns)
+  shap.summary_plot(shap_values, X_test, plot_type="bar")

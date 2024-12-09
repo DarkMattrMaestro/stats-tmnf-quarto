@@ -4,6 +4,17 @@ import random
 import numpy as np
 
 def stratified_train_test_split(y_encoded, X, test_size=0.25, seed=3142, ):
+  """_summary_
+
+  Args:
+      y_encoded (_type_): Class
+      X (_type_): Data
+      test_size (float, optional): Test size, as a percentage from 0 to 1. Defaults to 0.25.
+      seed (int, optional): _description_. Defaults to 3142.
+
+  Returns:
+      (tuple[NDArray, NDArray, NDArray, NDArray]): X_train, y_train, X_test, y_test
+  """
   X_train_list = []
   y_train_list = []
   X_test_list = []
