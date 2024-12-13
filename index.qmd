@@ -91,7 +91,8 @@ pkgs <- c(
   "reshape",
   "ggh4x",
   "reticulate",
-  "rjson"
+  "rjson",
+  "janitor"
 )
 
 # Charger les « packages » et, s'ils ne sont pas installés, les installer du mirroir de CRAN indiqué ci-haut (UWaterloo par défaut).
@@ -295,42 +296,52 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 ```{r}
 #| label: tbl-rapport-classification
 #| exho: FALSE
-#| tbl-cap: "........................."
+#| tbl-cap: "La précision et le rappel de chaque model selon la variable, en pourcentage (%)."
 #| out-width: '100%'
 #| tbl-align: 'center'
 
 report_df <- read.csv(file="models/report_object.csv", header=TRUE)
 
-multimodel <- function(df, n) {
-    varname <- paste("petal", n , sep=".")
-    mutate(df, !!varname := Petal.Width * n)
-}
-
 report_pivot_df <- report_df %>%
-  # group_by(variable) %>%
-  # group_by(model) %>%
+  mutate(
+    precision = precision * 100,
+    recall = recall * 100,
+    f1 = f1 * 100,
+    support = support * 100
+  ) %>%
   select(model:recall) %>%
   pivot_wider(
     names_glue = "{model}_{.value}",
     names_from=model,
-    values_from=c(precision, recall)
-  )# %>%
-  # select(model) %>%
+    values_from=c(precision, recall),
+    names_sort=TRUE,
+    names_vary = 'slowest'
+  )
 
 report_pivot_df %>%
-  kable_fr("latex", col.names = c("Variable", rep(c("Précision", "Rappel"), 3))) %>% #, "F1", "Support"
+  filter(!(variable %in% c("weighted avg"))) %>%
+  mutate(
+    variable=recode(variable,
+      `0.0`="Normal",
+      `1.0`="Offroad",
+      `2.0`="Fullspeed",
+      `3.0`="LOL",
+      `4.0`="Tech",
+      `5.0`="SpeedTech",
+      `6.0`="PressForward",
+      `7.0`="Grass",
+      `macro avg`="Moyenne"
+    )
+  ) %>%
+  kable_fr(col.names = c("Étiquette", rep(c("Précision", "Rappel"), 3))) %>% #, "F1", "Support"
   add_header_above(
     header=c(" ", 
       "Simulacre"=2, 
       "Régression\nlogistique"=2,
       "Amplification\nde gradients"=2
     )
-  )# %>%
-  # adorn_totals(
-  #   ,
-  #   where="row",
-  #   name="Moyenne"
-  # )
+  ) %>%
+  row_spec(9, bold=TRUE, background="#e6e6e6")
 
 ```
 
