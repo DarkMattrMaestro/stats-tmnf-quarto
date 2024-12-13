@@ -209,6 +209,14 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 
 # Introduction
 
+
+
+# Méthodes
+
+
+
+# Résultats
+
 ```{r}
 #| label: fig-violin-facet
 #| echo: FALSE
@@ -279,12 +287,6 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
   )
 
 ```
-
-# Méthodes
-
-
-
-# Résultats
 
 ![Les matrices de confusion des trois modèles statistiques utilisés: un simulacre simple, une régression logistique, et un amplification de gradients (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
 
