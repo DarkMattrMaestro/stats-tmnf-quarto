@@ -69,6 +69,8 @@ y_encoded = OrdinalEncoder().fit_transform(y)
 
 X_train, y_train, X_test, y_test = stratified_train_test_split(y_encoded, X)
 
+report_object = {}
+
 # Dummy model #####################################
 
 if True:
@@ -81,6 +83,8 @@ if True:
   y_pred = dummy_model.predict(X_test)
   print(sklearn.metrics.confusion_matrix(y_test, y_pred))
   print(sklearn.metrics.classification_report(y_test, y_pred))
+  
+  report_object["dummy"] = sklearn.metrics.classification_report(y_test, y_pred, output_dict=True)
   
   # print(dummy_model.predict(X))
   print("Dummy best %: ", dummy_model.score(X, y_encoded))
@@ -99,6 +103,8 @@ if True:
   y_pred = logistic_classifier.predict(X_test)
   print(sklearn.metrics.confusion_matrix(y_test, y_pred))
   print(sklearn.metrics.classification_report(y_test, y_pred))
+  
+  report_object["logistic"] = sklearn.metrics.classification_report(y_test, y_pred, output_dict=True)
 
   count_correct = 0
   for i in range(len(y_test)):
@@ -156,6 +162,8 @@ if True:
 
   print(sklearn.metrics.confusion_matrix(y_test, y_pred))
   print(sklearn.metrics.classification_report(y_test, y_pred))
+  
+  report_object["xgboost"] = sklearn.metrics.classification_report(y_test, y_pred, output_dict=True)
 
   count_correct = 0
   for i in range(len(y_test)):
@@ -180,3 +188,26 @@ if True:
   # shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_type="bar", max_display=5)
   # shap.summary_plot(shap_values, features=X, feature_names=X.columns)
   shap.summary_plot(shap_values, X_test, plot_type="bar")
+
+# Sauvegarder le rapport de classification
+
+fields = ["model", "variable", "precision", "recall", "f1", "support"]
+rows = []
+
+for key in report_object.keys():
+  del report_object[key]["accuracy"]
+
+for model in report_object.keys():
+  for variable in report_object["dummy"].keys():
+    rows.append([model, variable, report_object[model][variable]["precision"], report_object[model][variable]["recall"], report_object[model][variable]["f1-score"], report_object[model][variable]["support"]])
+
+import csv
+with open('models/report_object.csv', 'w', newline='') as f:
+    write = csv.writer(f)
+     
+    write.writerow(fields)
+    write.writerows(rows, )
+
+# import json
+# with open('models/report_object.json', 'w') as f:
+#   json.dump(report_object, f)
