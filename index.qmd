@@ -360,7 +360,7 @@ Les données sont d’abord séparées en groupes d'entraînement et de test. Ce
 
 ## Exploration pré-modèle
 
-Nous pouvons comparer les distributions de chaque variable selon la variable, soit le but de la Figure @fig-violin-facet.
+Nous pouvons comparer les distributions de chaque variable selon la variable, soit le but de la @fig-violin-facet.
 
 ```{r}
 #| label: fig-violin-facet
@@ -436,9 +436,9 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 
 ### Le variant
 
-Débutant avec des impressions générales, les circuits « PressForward » ont les plus grandes variances. Ce motif suggère que cette étiquette contient des circuits qui diffèrent grandement entre eux. Ceci est en accord avec notre hypothèse originale selon laquelle la variance serait présente dû à des acrobaties extrêmes. La présence d’acrobaties où la voiture roulerait dans l’air est probablement ce qui a engendré les variations des déplacements horizontaux (`AvgAbsDisplacementHorizontal`) et verticaux (`AvgAbsDisplacementY`), des vitesses vers l’avant (`AvgSpeedForward`) et latérale (`AvgAbsSpeedSideward`), et de l’orientation moyenne de la voiture (`PercentPitch——Third` et `PercentRoll——Third`), démontrées dans la Figure @fig-violin-facet.
+Débutant avec des impressions générales, les circuits « PressForward » ont les plus grandes variances. Ce motif suggère que cette étiquette contient des circuits qui diffèrent grandement entre eux. Ceci est en accord avec notre hypothèse originale selon laquelle la variance serait présente dû à des acrobaties extrêmes. La présence d’acrobaties où la voiture roulerait dans l’air est probablement ce qui a engendré les variations des déplacements horizontaux (`AvgAbsDisplacementHorizontal`) et verticaux (`AvgAbsDisplacementY`), des vitesses vers l’avant (`AvgSpeedForward`) et latérale (`AvgAbsSpeedSideward`), et de l’orientation moyenne de la voiture (`PercentPitch——Third` et `PercentRoll——Third`), démontrées dans la @fig-violin-facet.
 
-Il est également notable que les circuits « PressForward » aient des biais de pilotage (`AvgSteerBias`) et des pilotages totaux (`AvgAbsSteer`) qui varient largement. Il y a plusieurs raisons possibles. Si les circuits de cette étiquette suivent exactement le nom — seulement appuyer la touche avant —, il n’y aurait aucun biais et aucun pilotage. Ceci n’est pas le cas, mais il y a également la possibilité qu’une touche directionnelle soit tenue le long du circuit. Dans ce cas, le biais et le pilotage seraient chacun soit 0% ou 100%. Ceci n’est également pas toujours le cas: les variables sont distribuées d’une manière non binaire. Il y a ainsi des joueurs qui modifient leurs entrées lors de leur cheminement. Il est donc plus difficile de déterminer un motif pouvant identifier un circuit « PressForward » au moyen d’un cheminement.
+Il est également notable que les circuits « PressForward » aient des biais de pilotage (`AvgSteerBias`) et des pilotages totaux (`AvgAbsSteer`) qui varient largement. Si les circuits de cette étiquette suivent exactement le nom — seulement appuyer la touche avant —, il n’y aurait aucun biais et aucun pilotage. Ceci n’est pas le cas, mais il y a également la possibilité qu’une touche directionnelle soit tenue le long du circuit. Dans ce cas, le biais et le pilotage seraient chacun soit 0% ou 100%. Ceci n’est également pas toujours le cas: les variables sont distribuées d’une manière non binaire. Il y a ainsi des joueurs qui modifient leurs entrées lors de leur cheminement. Il est donc plus difficile de déterminer un motif pouvant identifier un circuit « PressForward » au moyen d’un cheminement.
 
 ### L’impossibilité
 
@@ -461,19 +461,34 @@ D’abord, nous avons eu l’hypothèse que l’étiquette « Grass » se distin
 ## Quel modèle de classification est le plus représentatif ?
 
 Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la section « Quel modèle de classification servira le mieux ? ». Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
+$$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(1 - p\right)\right)$$
+où $y$ est la valeur réelle et $p$ est la probabilité estimée.
 
-$\[L_{log}(y,p) = -(y\log{p} + (1 - y)\log{1 - p})\]$
+Un modèle de régression logistique est, ensuite, utilisé afin d’assurer que la complexité du modèle d’amplification de gradients ne rend pas pire la représentativité potentielle d’un modèle. Ça agit comme un point de référence de modèles plus simples. Afin de ne pas accidentellement mal ajuster les paramètres du modèle de référence, les paramètres n’ont été modifiés que minimalement.
 
+Le dernier modèle, soit le modèle de simulacre, sert comme point de référence minimale. C’est un modèle sans raisonnement qui choisit toujours la même étiquette. Ainsi, un modèle qui performe pire que le simulacre est moins représentatif que deviner. Notez que l’exactitude du modèle de simulacre équivaut l’espérance mathématique de deviner le circuit aléatoirement, soit de $E(X) = \frac{1}{8} = 12,50\%$.
 
-
-## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
-
-
-
-# Résultats {#sec-result}
-
+Bien que le modèle le plus complexe semblerait meilleur de première vue, il faut le vérifier. La @fig-model-stats démontre l’exactitude des trois modèles par moyen de matrices de confusions. Notez qu’un modèle parfait n’aurait aucune étiquette mal assignée, et formerait donc une ligne diagonale du haut gauche au bas droit. Notez également que les matrices de confusion sont formées avec les données de test, et non les données d’entraînement, afin de mieux démontrer sa représentativité sur de nouvelles données.
 
 ![Les matrices de confusion des trois modèles statistiques utilisés: un simulacre simple, une régression logistique, et un amplification de gradients (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
+
+Comme attendu, le modèle de simulacre, qui prédit toujours la même étiquette, n’a que peu de représentativité. Le modèle de régression logistique présente une meilleure représentativité; une ligne diagonale est quelque peu visible. Toutefois, les étiquettes « Fullspeed », « LOL » et « PressForward » sont prédites incorrectement pour plus de la moitié de l’échantillon de test. Le « Tech » est le plus souvent bien prédit. Le modèle d’amplification de gradients surpasse les deux modèles précédents, formant une ligne presque entièrement diagonale, bien corrélée. La seule étiquette qui est très souvent mal prédite est le « LOL ».
+
+Nous pouvons plus concrètement comparer les modèles par moyen de métriques, telles que l’exactitude, la précision et le rappel. L’exactitude est calculée avec la formule
+$$\text{Exactitude} = \frac{\text{\# de classifications valides}}{\text{\# de classifications totales}}$$
+Ainsi, les modèles ont chacun des exactitudes de $12,50\%$, $63,44\%$ et $84,71\%$ respectivement, comme indiqué dans les sous-titres de la @fig-model-stats. Le modèle d’amplification de gradients est donc généralement le plus représentatif des trois modèles, suivi de loin par la régression logistique et de plus loin encore par le simulacre.
+
+La précision individuelle à chaque étiquette est déterminée par la formule
+$$P_{i} = \frac{\text{\# d'échantillons attribués correctement à la classe }i}{\text{\# d'échantillons attribués à la classe }i}$$
+Lorsque le nombre d’échantillons est distribué également entre les classes, telle qu’est le cas pour nos données, la formule de la précision moyenne est
+$$P = \frac{\displaystyle\sum_{i=1}^{n}P_{i}}{n}$$
+
+Le rappel a une formule similaire, se différenciant par un rapport avec les données valides plutôt que prédites:
+$$R_{i} = \frac{\text{\# d'échantillons attribués correctement à la classe }i}{\text{\# d'échantillons appartenant à la classe }i}$$
+La formule du rappel moyen est ensuite
+$$R = \frac{\displaystyle\sum_{i=1}^{n}R_{i}}{n}$$
+
+La précision et le rappel de chaque classe — soit l’étiquette dans Trackmania — pour chacun des trois modèles sont présentés dans le @tbl-rapport-classification. Notez que la précision de chaque étiquette dans le tableau équivaut au nombre d’échantillons bien prédit divisé par la somme de la colonne, et que le rappel est de même excepté que l’on divise par la somme de la rangée.
 
 ```{r}
 #| label: tbl-rapport-classification
@@ -527,6 +542,20 @@ report_pivot_df %>%
 
 ```
 
+Nous pouvons constater que le rappel a eu les plus grandes augmentations par le changement du modèle de régression logistique vers l’amplification de gradients. Tandis que la précision voit une augmentation maximale d’environ $30,91\%$ (voir l’étiquette « Grass »), le rappel voit des augmentations d’environ $49,64\%$ et $55,99\%$ pour les étiquettes « PressForward » et « FullSpeed » respectivement. Ceci suggère que la complexité supplémentaire a permis au modèle d’amplification de gradient à extraire des motifs moins évidents pour des étiquettes précises. Décrit visuellement, le modèle aurait découvert des motifs qui peuvent nettoyer une rangée des matrices de confusion de la @fig-model-stats à la fois.
+
+
+
+
+## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+
+
+
+# Résultats {#sec-result}
+
+
+
+
 ![La moyenne absolue des valeurs SHAP de chaque variable indépendante.](rendered-figs/fig-bar.pdf){#fig-importance-bar out-width=100% fig-align='center'}
 
 ![Les corrélations entre la valeur SHAP et la valeur de chaque variable. Les barres grises indiquent la dansité.](rendered-figs/fig-scatter.pdf){#fig-scatter out-width=100% fig-align='center'}
@@ -550,3 +579,13 @@ report_pivot_df %>%
 
 # Annexe {#sec-annex}
 
+## A - Programme d’échantillonnage {.unnumbered}
+
+## B - Variables de base {.unnumbered}
+
+Une majorité des variables sont extraites directement de fichiers GBX avec l’outil à source ouverte [GBX.NET2](https://github.com/BigBang1112/gbx-net) [@GBXNET]. Les spécifications de la relation de parenté entre les variables originales, soit des objets, se trouvent dans le répertoire du projet. Pour les échantillons, l’objet se nomme [CSceneVehicleCar.Sample](https://github.com/BigBang1112/gbx-net/blob/master/Src/GBX.NET/Engines/Scene/CSceneVehicleCar.Sample.cs) [@GBXNET].
+
+Étiquette - Qualitative nominale
+L’étiquette du circuit. (provenant de l’API de TMNF-X)
+
+\textbf{Étiquette} - Qualitative nominale\quad{}
