@@ -8,6 +8,7 @@ authors:
 bibliography:
   - references.bib
   - packages.bib
+bibliographystyle: apa
 nocite: |
   @*
 notebook-links: false
@@ -20,6 +21,7 @@ format:
       - text: |
           \usepackage{xcolor}
           \usepackage{lipsum}
+          \usepackage{glossaries}
       - macros.tex
     documentclass: scrreprt
     classoption: ["oneside", "open=any"]
@@ -210,15 +212,82 @@ norm2 <- function(x, na.rm = FALSE) (x - min(x, na.rm = na.rm)) / (max(x, na.rm 
 normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 ```
 
-# Introduction
+# Glossaire
+
+\textbf{API}\quad{} Une API, soit une interface de programmation d’applications, est l’interface entre un programme et un autre. Dans le cas de cet article, l’API de TMNF-X est l’interface utilisée pour communiquer avec la base de données de TMNF-X.
+
+\quad
+
+\textbf{Étiquette}\quad{} L’étiquette, ou « tag » en anglais, est le descripteur principal d’un circuit. Il n’y a pas de définitions officielles des différentes étiquettes de Trackmania Nations Forever, toutefois, l’installation Trackmania 2020 a été fournie quelques définitions des mêmes étiquettes. Les définitions fournies pour Trackmania 2020 ne sont pas compatibles avec TMNF en raison des différences majeures entre les deux installations.
+
+Le nom étiquette peut mener à confusion en discutant de modèles de classification puisqu’il y a la classification à classes multiples et à étiquettes multiples. Les deux catégories de modèles sont entièrement différentes. Le modèle d’amplification de gradients que nous utilisons plus tard dans ce rapport utilise des classes multiples. Ainsi, l’utilisation du terme « étiquette » en discutant du modèle fait référence aux étiquettes de Trackmania et non des étiquettes par rapport aux statistiques.
+
+\quad
+
+\textbf{TMNF}\quad{} TMNF est l’abréviation du titre Trackmania Nations Forever, le jeu de course d’arcade analysé dans cet article.
+
+\quad
+
+\textbf{TMNF-X}\quad{} Le site Internet a pour but de partager, entre joueurs, les créations reliées à Trackmania Nations Forever.
+
+\quad
+
+\textbf{Trackmania 2020}\quad{} L’installation du jeu Trackmania publié en 2020.
+
+\quad
+
+\textbf{Rediffusion}\quad{} Une rediffusion du chemin que parcourt un joueur. Aussi appelée « replay ».
+
+# Introduction {#sec-intro}
+
+Trackmania Nations Forever est la neuvième installation dans la série de jeux vidéo Trackmania. Ce jeu de course d’arcade, sortie en 2008, n’a que quatre entrées possibles: avancer, reculer, tourner vers la gauche, et tourner vers la droite. C’est ainsi un jeu très abordable pour des débutants. Il y a pourtant diverses fonctionnalités internes qui lui donnent un plafond de compétences très élevé.
+
+L’analyse statistique est très courante dans la série Trackmania afin de s’améliorer au jeu, pour pousser les limites du possible, ou simplement pour explorer une curiosité. Des joueurs, tels que JstAnothrVirtuoso [@JstAnothr] et Yosh [@Yosh], et des projets comme Linesight [@Linesight] sont de bons exemples. Ces deux derniers ont même agi comme sources d’inspiration pour le thème général de ce projet. Il y a également des outils tels que TMDojo [@TMDojo] pour l’installation Trackmania de 2020 qui servent à donner de la rétroaction rapide aux joueurs sur des circuits variés.
+
+Les joueurs peuvent créer leurs propres circuits, ainsi que de les publier sur des plateformes telles que Trackmania Nations Forever Exchange, abrégé à TMNF-X. Les auteurs catégorisent leur circuit selon le style et but, soit sous une étiquette. Il est à noter que les étiquettes n’ont pas de définitions exactes, et que plus d’une étiquette peut être assignée par circuit. Des étiquettes pourraient être « Fullspeed », « LOL » ou un certain nombre d’autres qui sont indiquées dans la [Section @sec-method].
+
+Les étiquettes sont donc choisies selon l’opinion subjective de l’auteur des étiquettes les plus appropriées. Les auteurs utilisent leur interprétation des différences entre les caractéristiques de chaque étiquette de circuit. Il est ainsi à se demander quelles caractéristiques principales du cheminement de la voiture influencent l’étiquette du circuit. Cette étude explora les relations entre le cheminement de la voiture et l’étiquette du circuit.
+
+## Définir un joueur compétent
+
+Il faut d’abord définir les joueurs compétents, ceux auxquels les rediffusions seront tirées.
+
+Un joueur compétent devra être assez pratiqué à Trackmania Nations Forever afin de bien représenter un circuit donné. Un joueur non compétent, au contraire, ne pourra pas effectivement compléter un circuit sans faire des actions aberrantes, telles qu’entrer en collision avec des murs ou ralentir la voiture. Ce contraste permet de définir un joueur compétent par négation: c’est un joueur qui ne fait peu d’erreurs.
+
+Notez que cette définition est subjective et ne représente pas tous les joueurs compétents. C’est une définition à but d’augmenter la représentativité du circuit par le cheminement de la voiture du joueur considéré compétent.
+
+La sélection de rediffusions de joueurs compétents est embrouillée par le manque d’informations contextuelles ; le rang du joueur, son temps total dans le jeu, et autres tels critères ne sont pas facilement découvrables en cherchant un circuit donné et, plus important encore, ces critères identifieraient les joueurs. Il est donc à faire recours à des critères présentés pour chaque fichier de rediffusion.
+
+Nous avons choisi de filtrer selon le nombre de joueurs ayant soumis une rediffusion pour un circuit donné sur TMNF-X. Ce critère est (assez) simple à filtrer au travers de l’API de TMNF-X et permet aux rediffusions de rapprocher le cheminement le plus représentatif du circuit. Le plus de rediffusions soumises, le plus haut le niveau de compétition et, donc, le plus représentatif la rediffusion. Afin de bien équilibrer une sélection représentative des circuits^[Une filtration trop restrictive limitera les circuits sélectionnés à ceux qui sont très fameux, ayant des milliers de rediffusions soumis, plutôt que ceux qui ont une ou deux bonnes rediffusions.] et la qualité des rediffusions^[Les circuits ayant des milliers de rediffusions tendent, de notre expérience, à avoir des rediffusions poussées aux limites du possible.], un joueur compétent sera défini, dans cet article, en tant qu’un joueur tenant le record sur un circuit donné, où ce circuit comporte au minimum cinq records soumis. En choisissant cinq comme nombre minimal de rediffusions, nous espérons minimiser le nombre de records insuffisamment représentatifs d’un circuit par des joueurs ayant moins d’expérience.
+
+Il est à noter qu’il se pourrait, toutefois, que plus de cinq joueurs débutants décident, par chance ou par exprès, de soumettre leurs records sur le même circuit.
+
+## Questions
+
+Cette section couvre les questions provoquant l’étude actuelle.
+
+### Exploration pré-modèle
+
+Il est fort probable que certaines techniques soient discernables avec les variations de variables récoltées. Une telle technique pourrait être la « grass-slide », où la voiture est positionnée à 90° et fait un virage agressif [@Tunachopps]. Dans ce cas, nous estimons une hausse de vitesse angulaire et de vitesse latérale comparée au restant du circuit. D’autres techniques/bogues potentiellement discernables seraient la « edge-bogue », la « uber-bogue » et la « nose-bogue » qui changent drastiquement le vecteur vitesse^[Pour une démonstration, voir la vidéo par Kimura et al.]. Un aperçu de la distribution de bogues ou autres provoquant de grands changements sera visible par des graphiques à violons multiples de la différence maximale et moyenne de vecteur vitesse selon l’étiquette et de la différence maximale et moyenne de vitesse latérale selon l’étiquette. Sachant que la définition de l’étiquette « PressForward » dans Trackmania 2020 indique la présence d’acrobaties normalement impossibles manuellement, il est probable que de tels changements drastiques de vitesse soient présents.
+
+## Quel modèle de classification servira le mieux ?
+
+Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a cinq exigences principales.
+
+Le modèle doit d’abord \textbf{classifier de manière tabulaire} afin de pouvoir utiliser les données récoltées (« What is Tabular Classification? »). De tels modèles sont les Transformeurs tabulaires et k-NN [@KeitaIntroClassification], etc.
+
+Afin de réduire la complexité de l’analyse et de mener à un meilleur contraste entre les étiquettes, le modèle devra \textbf{prédire une étiquette}. Le modèle devrait pouvoir faire de la classification à classe multiple afin de gérer le nombre d’étiquettes possibles plus grand que deux^[Soit une variable nominale non binaire.] @KeitaIntroClassification. En raison de la nécessité d’une exclusivité mutuelle entre les classes @KeitaIntroClassification pour la classification à classes multiples, les circuits sélectionnés devront être filtrés afin de ne garder que les circuits ayant une seule étiquette assignée. De tels algorithmes, lorsque mis en série, sont la forêt aléatoire, Bayes naïf, k-NN et amplification de gradients. Il est à noter que la classification à étiquette multiple, telle que l’amplification de gradients multiétiquettes @KeitaIntroClassification, serait préférable afin de prédire et gérer plusieurs étiquettes simultanément. Toutefois, ceci mènerait à une complexité hors de la portée de ce projet.
+
+Le modèle serait préférablement un \textbf{apprenant avide} afin de présenter des tendances dans les données plutôt que de simplement prédire selon les points de données les plus proches @KeitaIntroClassification. Une majorité des modèles respectent cette exigence, notamment à l’exception du modèle k-NN qui est relativement simple comparé aux autres modèles, mais qui cherche le voisin le plus près.
+
+Le modèle devrait préférablement être \textbf{explicable}, soit par l’utilisation d’une IAX (Keita). Puisque l’étude actuelle vise non seulement à prédire l’étiquette, mais également à comprendre ce qui influe un choix d’étiquette, il est préférable qu’une interprétabilité soit facilitée pour le modèle choisi. Les IAXs sont habituellement des outils post-prédiction servant à expliquer le raisonnement d’un modèle, donc elles peuvent fonctionner avec une majorité des modèles existants. Des exemples de techniques IAX sont SHAP (Awan), LIME et l’explication contrefactuelle (Keita).
+
+
+# Méthodologie {#sec-method}
 
 
 
-# Méthodes
-
-
-
-# Résultats
+# Résultats {#sec-result}
 
 ```{r}
 #| label: fig-violin-facet
@@ -353,15 +422,18 @@ report_pivot_df %>%
 
 ![................](rendered-figs/fig-waterfall-0.pdf){#fig-waterfall-0 out-width=100% fig-align='center'}
 
-# Discussion
+# Discussion {#sec-discussion}
 
 
 
-# Conclusion
+# Conclusion {#sec-conclusion}
 
 
 
-# Références
+# Bibliographie {#sec-bib}
 
 ::: {#refs}
 :::
+
+# Annexe {#sec-annex}
+
