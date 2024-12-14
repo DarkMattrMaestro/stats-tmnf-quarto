@@ -2,6 +2,10 @@
 title: Classification de toute allure!
 subtitle: Une analyse de la relation entre l’étiquette et le cheminement de circuits dans Trackmania Nations Forever utilisant la classification
 highlight-style: github
+crossref:
+  fig-prefix: Figure
+  tbl-prefix: Tableau
+  ref-hyperlink: true
 authors:
   - name: Nicolas Kmita
     affiliation: École secondaire Franco-Cité
@@ -16,12 +20,17 @@ lang: fr
 tbl-cap-location: bottom
 format:
   titlepage-pdf:
+    fig-pos: "H"
+    tbl-pos: "H"
     pdfengine: xelatex
     include-in-header:
       - text: |
           \usepackage{xcolor}
           \usepackage{lipsum}
           \usepackage{glossaries}
+          \usepackage{booktabs}
+          \usepackage{hyperref}
+          \usepackage[capitalise,noabbrev]{cleveref}
       - macros.tex
     documentclass: scrreprt
     classoption: ["oneside", "open=any"]
@@ -248,7 +257,7 @@ Les joueurs peuvent créer leurs propres circuits, ainsi que de les publier sur 
 
 Les étiquettes sont donc choisies selon l’opinion subjective de l’auteur des étiquettes les plus appropriées. Les auteurs utilisent leur interprétation des différences entre les caractéristiques de chaque étiquette de circuit. Il est ainsi à se demander quelles caractéristiques principales du cheminement de la voiture influencent l’étiquette du circuit. Cette étude explora les relations entre le cheminement de la voiture et l’étiquette du circuit.
 
-## Définir un joueur compétent
+## Définir un joueur compétent {#sec-competent}
 
 Il faut d’abord définir les joueurs compétents, ceux auxquels les rediffusions seront tirées.
 
@@ -270,27 +279,92 @@ Cette section couvre les questions provoquant l’étude actuelle.
 
 Il est fort probable que certaines techniques soient discernables avec les variations de variables récoltées. Une telle technique pourrait être la « grass-slide », où la voiture est positionnée à 90° et fait un virage agressif [@Tunachopps]. Dans ce cas, nous estimons une hausse de vitesse angulaire et de vitesse latérale comparée au restant du circuit. D’autres techniques/bogues potentiellement discernables seraient la « edge-bogue », la « uber-bogue » et la « nose-bogue » qui changent drastiquement le vecteur vitesse^[Pour une démonstration, voir la vidéo par Kimura et al.]. Un aperçu de la distribution de bogues ou autres provoquant de grands changements sera visible par des graphiques à violons multiples de la différence maximale et moyenne de vecteur vitesse selon l’étiquette et de la différence maximale et moyenne de vitesse latérale selon l’étiquette. Sachant que la définition de l’étiquette « PressForward » dans Trackmania 2020 indique la présence d’acrobaties normalement impossibles manuellement, il est probable que de tels changements drastiques de vitesse soient présents.
 
-## Quel modèle de classification servira le mieux ?
+## Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis}
 
 Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a cinq exigences principales.
 
 Le modèle doit d’abord \textbf{classifier de manière tabulaire} afin de pouvoir utiliser les données récoltées (« What is Tabular Classification? »). De tels modèles sont les Transformeurs tabulaires et k-NN [@KeitaIntroClassification], etc.
 
-Afin de réduire la complexité de l’analyse et de mener à un meilleur contraste entre les étiquettes, le modèle devra \textbf{prédire une étiquette}. Le modèle devrait pouvoir faire de la classification à classe multiple afin de gérer le nombre d’étiquettes possibles plus grand que deux^[Soit une variable nominale non binaire.] @KeitaIntroClassification. En raison de la nécessité d’une exclusivité mutuelle entre les classes @KeitaIntroClassification pour la classification à classes multiples, les circuits sélectionnés devront être filtrés afin de ne garder que les circuits ayant une seule étiquette assignée. De tels algorithmes, lorsque mis en série, sont la forêt aléatoire, Bayes naïf, k-NN et amplification de gradients. Il est à noter que la classification à étiquette multiple, telle que l’amplification de gradients multiétiquettes @KeitaIntroClassification, serait préférable afin de prédire et gérer plusieurs étiquettes simultanément. Toutefois, ceci mènerait à une complexité hors de la portée de ce projet.
+Afin de réduire la complexité de l’analyse et de mener à un meilleur contraste entre les étiquettes, le modèle devra \textbf{prédire une étiquette}. Le modèle devrait pouvoir faire de la classification à classe multiple afin de gérer le nombre d’étiquettes possibles plus grand que deux^[Soit une variable nominale non binaire.] [@KeitaIntroClassification]. En raison de la nécessité d’une exclusivité mutuelle entre les classes [@KeitaIntroClassification] pour la classification à classes multiples, les circuits sélectionnés devront être filtrés afin de ne garder que les circuits ayant une seule étiquette assignée. De tels algorithmes, lorsque mis en série, sont la forêt aléatoire, Bayes naïf, k-NN et amplification de gradients. Il est à noter que la classification à étiquette multiple, telle que l’amplification de gradients multiétiquettes [@KeitaIntroClassification], serait préférable afin de prédire et gérer plusieurs étiquettes simultanément. Toutefois, ceci mènerait à une complexité hors de la portée de ce projet.
 
-Le modèle serait préférablement un \textbf{apprenant avide} afin de présenter des tendances dans les données plutôt que de simplement prédire selon les points de données les plus proches @KeitaIntroClassification. Une majorité des modèles respectent cette exigence, notamment à l’exception du modèle k-NN qui est relativement simple comparé aux autres modèles, mais qui cherche le voisin le plus près.
+Le modèle serait préférablement un \textbf{apprenant avide} afin de présenter des tendances dans les données plutôt que de simplement prédire selon les points de données les plus proches [@KeitaIntroClassification]. Une majorité des modèles respectent cette exigence, notamment à l’exception du modèle k-NN qui est relativement simple comparé aux autres modèles, mais qui cherche le voisin le plus près.
 
-Le modèle devrait préférablement être \textbf{explicable}, soit par l’utilisation d’une IAX (Keita). Puisque l’étude actuelle vise non seulement à prédire l’étiquette, mais également à comprendre ce qui influe un choix d’étiquette, il est préférable qu’une interprétabilité soit facilitée pour le modèle choisi. Les IAXs sont habituellement des outils post-prédiction servant à expliquer le raisonnement d’un modèle, donc elles peuvent fonctionner avec une majorité des modèles existants. Des exemples de techniques IAX sont SHAP (Awan), LIME et l’explication contrefactuelle (Keita).
+Le modèle devrait préférablement être \textbf{explicable}, soit par l’utilisation d’une IAX^[Intelligence artificielle explicable] [@KeitaIntroClassification]. Puisque l’étude actuelle vise non seulement à prédire l’étiquette, mais également à comprendre ce qui influe un choix d’étiquette, il est préférable qu’une interprétabilité soit facilitée pour le modèle choisi^[Notez également que l’Europe a des réglementations, telles que le Règlement général sur la protection des données [@KeitaIntroClassification], qui mandatent l’explication de décisions automatisées.]. Les IAXs sont habituellement des outils post-prédiction servant à expliquer le raisonnement d’un modèle, donc elles peuvent fonctionner avec une majorité des modèles existants. Des exemples de techniques IAX sont SHAP [@AwanIntroSHAP], LIME et l’explication contrefactuelle [@KeitaIntroClassification].
+
+Combinant toutes ces exigences, peu de modèles restent^[De la liste des modèles trouvés lors de recherches.]. La combinaison de techniques et de modèles qui, sans analyser les données profondément d’avance, est prévue être la plus exacte et précise suit. Soit un modèle d’arbre de décisions à classes multiples [@KattackMultiLabel], soit d’amplification de gradient à classes multiple [@KeitaIntroClassification], servira probablement^[La profondeur des subtilités de chaque méthode diminue la certitude de la méthode la plus représentative.] le mieux pour classifier les nombreuses étiquettes. Si la méthode choisie n’incorpore pas une explicabilité, telle que dans le cas de l’amplification de gradient sans modifications [@XGBoostMultiOutput], la technique IAX SHAP [@AwanIntroSHAP] est prédite de permettre la meilleure explication des choix prise par le modèle.
+
+Afin de déterminer le modèle le plus représentatif, les modèles peuvent être comparés entre eux par moyen de leur précision, exactitude, sensibilité, spécificité, score F1, ou courbe ROC^[Certains indicateurs dépendent de distributions particulières des valeurs prédites. Par exemple, la spécificité est préférée lorsqu’il y a plus de faux positifs que de faux négatifs.] [@KeitaIntroClassification].
+
+Un modèle de simulacre sera d’abord utilisé afin d’assigner un point de départ. Un modèle de régression logistique sera, ensuite, utilisé comme modèle simple et souvent efficace. Finalement, un modèle d’amplification de gradients est prévu être le plus représentatif.
+
+## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+
+Utilisant les définitions fournies pour Trackmania 2020 comme base, nous croyons que l’étiquette « Fullspeed » pourrait être différentiable par la vitesse vers l’avant élevée en raison de l’appui constant sur l’accélérateur et des virages prolongés [@Eyebo2024], le roulis en raison des « wallrides » et le déplacement total en raison du peu de virages courts.
+
+Le « Tech » et le « SpeedTech » se distingueraient par leur grand nombre de dérives afin de compléter des virages serrés. Comme décrite par la première loi de Newton, l’inertie de la voiture lors d’un virage vers, par exemple, la gauche incitera la voiture à déraper vers la droite, ce qui augmenterait la vitesse latérale opposée au pilotage [@BertrandNewton]. La vitesse latérale et le pilotage pointeraient donc souvent dans les sens opposés.
+
+La vérification de ces hypothèses se fait par moyen d’une analyse du modèle explicable décrite dans la [Section @sec-which-model-hypothesis].
 
 
 # Méthodologie {#sec-method}
 
+La population de cette étude est comprise des circuits publiés sur TMNF-X [@TMNFX] ayant une seule étiquette assignée, et ne nécessitant aucune modification du jeu telle que TMUnlimiter [@TomekUnlimiter]. Ces circuits sont également du type « Race », puisque c’est le seul type permettant une course habituelle. La taille de la population sera ainsi d’environ 600 000 circuits^[Ceci est une approximation selon le nombre total de circuits [@TMNFXStats].]. Le record mondial sur chaque circuit en est inclus.
+
+Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} } sont analysées dès la liste d’étiquettes, soit { \textcolor{gray}{Normal, Stunt, Maze, Offroad, Laps, Fullspeed, LOL, Tech, SpeedTech, RPG, PressForward, Trial, Grass} }. Les étiquettes exclues vont à l’encontre du but de l’étude, ne pourraient pas raisonnablement être analysées dans les délais prescrits, ou les deux cas simultanément. Les raisons d’exclusions précises à chaque étiquette se trouvent dans le Tableau \ref{Exclusions} qui suit.
+
+\begin{table}[H]
+\centering
+  \begin{tabular}{ll}
+  \toprule
+  Étiquette & Raison d'exclusion \\
+  \midrule
+  Stunt & Le but n’est pas la vitesse, mais plutôt un score de cascade. \\[10pt]
+  Maze  & Le but est de trouver le bon chemin et, ayant plusieurs chemins \\
+        & valides, le circuit n’est souvent pas ordonné. \\[10pt]
+  Laps  & Le même circuit est complété plus d’une fois. \\[10pt]
+  RPG   & L’étiquette comporte majoritairement des circuits durant des \\
+        & heures de suite, ayant des différences de quelques heures \\
+        & entre chaque record. \\[10pt]
+  Trial & L’étiquette est définie par la difficulté extrême et la longue \\
+        & durée des circuits (iBazztyB, et al, s. d.). \\
+  \bottomrule
+  \end{tabular}
+\caption{Les raisons d’exclusion d’étiquettes de l’échantillon.}
+\label{Exclusions}
+\end{table}
+
+Les données récoltées de cette étude observationnelle sont d’abord stratifiées selon l’étiquette de chaque circuit, choisissant aléatoirement ≥1113 circuits par strate. Ceci permet d’atteindre et dépasser la taille minimale pseudo-magique de 30 échantillons tout en ne prenant pas une durée non raisonnable à décortiquer les fichiers avec le programme de l’TODO:Annexe A. Ensuite, le record sur chaque circuit, soit la rediffusion ayant le temps de terminaison le plus bas, est tiré dès l’API du site TMNF-X. Seuls les circuits ayant plus de cinq rediffusions soumis sur TMNF-X sont considérés. Ces deux dernières conditions visent à diminuer le nombre de rediffusions à moitié effort entrant dans l’échantillon, ce qui permet une meilleure représentativité du chemin du circuit, comme décrit dans la @sec-competent. Après l’échantillonnage, les rediffusions sont analysées^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] afin de ressortir les métadonnées et calculer d’autres renseignements utiles, soit de procurer la variable dépendante et les variables indépendantes et confondantes. L’TODO:Annexe A présente le programme appliquant la stratégie d’échantillonnage et d’analyse^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] de rediffusions décrite^[Notez qu’il est possible de voir les résultats sans exécuter le code en visionnant le fichier `MainCodebase.ipynb`.].
+
+## Sources des données
+
+Les données de chaque circuit et rediffusion sont tirées dès le serveur de TMNF-X. L’étiquette est indiquée directement dans les informations de chaque circuit; la durée du circuit se trouve dans les informations extraites de la rediffusion; puis le restant des données sont ressorties de chaque échantillon de l’état du jeu^[Trackmania Nations Forever sauvegarde un aperçu approximatif du jeu à chaque 100 millisecondes dans chaque fichier de rediffusion.]. Un aperçu plus détaillé des variables se trouve dans l’TODO:Annexe B.
+
+TMNF-X est à la fois une source primaire et secondaire. Des données telles que le type de circuit sont tirées dès l’API de TMNF-X, ce qui lui rend une source secondaire. D’autres données sont récoltées directement dès les fichiers de rediffusion des circuits stockés sur TMNF-X^[Les fichiers de rediffusion sont stockés sur les serveurs de TMNF-X, mais l’API de TMNF-X n’expose pas les données de ces rediffusions.], ce qui le rend également une source primaire.
+
+## Validité des données récoltés du jeu
+
+Puisque les données sont extraites d’un fichier créé par le jeu lui-même^[Après avoir complété un circuit, TMNF permet de sauvegarder une rediffusion afin de visionner de nouveau le cheminement qu’a pris un joueur. Cette rediffusion est stockée sous forme de fichier « .Replay.Gbx ».], elles devraient être très similaires à ce qu’interprète le jeu.
+
+Toutefois, l’utilisation d’un outil d’extraction majoritairement écrit par la communauté — soit GBX.NET2 —, et non pas par les créateurs du jeu, pourrait influer des variations de ce qui est supposé être interprété lors de l’analyse^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] du fichier. Il est à noter que les fichiers sont encodés et que les sections pertinentes sont interprétées selon ce qu’ont découvert les créateurs de l’outil GBX.NET2 [@GBXNET].
+
+Il y a également certains calculs lors de la récolte des données qui pourraient influer d’autres variations. Un tel calcul sert à convertir le quaternion de rotation de la voiture en tangage, lacet et roulis, soit vers l’espace Euler. Utilisant l’arc tangent et l’arc sinus, avec des nombres à point décimal flottant, des déviations minimes en raison d’arrondissement erroné pourraient survenir [@FloatingPoint].
+
+## Entraînement des modèles prédictifs
+
+Les données sont échantillonnées également entre chaque étiquette. Le nombre de circuits « Normal » échantillonnés est égal à celui des circuits « Offroad » qui est, lui aussi, égale à celui des circuits « Fullspeed », etc. Ceci prévient certains biais résultant de déséquilibres dans la quantité de données pour chaque étiquette. Ceci prévient également la nécessité de rééchantillonnage^[Exemples: rééchantillonnage par grappe, sous-rééchantillonnage, suréchantillonnage SMOTE [@KeitaIntroClassification; @ChawlaAIResearch].] [@KeitaIntroClassification; @ChawlaAIResearch pp. 322] ou de modèles spécialisés qui prennent en compte les coûts de la classification incorrecte^[Tels que les machines à support vectoriel sensible aux coûts [@SVM2019].].
+
+Les données sont d’abord séparées en groupes d'entraînement et de test. Ceci prévient le surajustement des modèles sur les données d’entraînement. L’utilisation de données externes de ceux qui servent à entraîner donne un indice de ce qu’a vraiment compris le modèle. Le but n’est pas d’entraîner des modèles qui mémorisent les réponses, mais plutôt d’entraîner des modèles pouvant suivre des motifs et généraliser; interpoler et extrapoler.
 
 
-# Résultats {#sec-result}
+# Analyse {#sec-analyse}
+
+## Exploration pré-modèle
+
+Nous pouvons comparer les distributions de chaque variable selon la variable, soit le but de la Figure @fig-violin-facet.
 
 ```{r}
 #| label: fig-violin-facet
+#| fig-pos: 't'
 #| echo: FALSE
 #| fig-cap: "Les distributions relatives (relatives aux minimums et maximums) des valeurs de chaque variable selon l'étiquette. Les barres rouges représentent l'écart type distancé de la moyenne."
 #| fig-width: 8
@@ -359,6 +433,45 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
   )
 
 ```
+
+### Le variant
+
+Débutant avec des impressions générales, les circuits « PressForward » ont les plus grandes variances. Ce motif suggère que cette étiquette contient des circuits qui diffèrent grandement entre eux. Ceci est en accord avec notre hypothèse originale selon laquelle la variance serait présente dû à des acrobaties extrêmes. La présence d’acrobaties où la voiture roulerait dans l’air est probablement ce qui a engendré les variations des déplacements horizontaux (`AvgAbsDisplacementHorizontal`) et verticaux (`AvgAbsDisplacementY`), des vitesses vers l’avant (`AvgSpeedForward`) et latérale (`AvgAbsSpeedSideward`), et de l’orientation moyenne de la voiture (`PercentPitch——Third` et `PercentRoll——Third`), démontrées dans la Figure @fig-violin-facet.
+
+Il est également notable que les circuits « PressForward » aient des biais de pilotage (`AvgSteerBias`) et des pilotages totaux (`AvgAbsSteer`) qui varient largement. Il y a plusieurs raisons possibles. Si les circuits de cette étiquette suivent exactement le nom — seulement appuyer la touche avant —, il n’y aurait aucun biais et aucun pilotage. Ceci n’est pas le cas, mais il y a également la possibilité qu’une touche directionnelle soit tenue le long du circuit. Dans ce cas, le biais et le pilotage seraient chacun soit 0% ou 100%. Ceci n’est également pas toujours le cas: les variables sont distribuées d’une manière non binaire. Il y a ainsi des joueurs qui modifient leurs entrées lors de leur cheminement. Il est donc plus difficile de déterminer un motif pouvant identifier un circuit « PressForward » au moyen d’un cheminement.
+
+### L’impossibilité
+
+La seule variable sans variance est le pourcentage de roulis se situant dans le tiers le plus haut (`PercentRollUpperThird`). Bien que ceci paraisse être en raison d’un manque de cheminements aberrants plaçant la voiture à l’envers, ce n’est pas le cas. Plutôt, le calcul qui convertit le quaternion de rotation vers le tangage, lacet et roulis priorise le tangage au roulis. Il est ainsi impossible d’avoir un pourcentage élevé de roulis dans le tiers maximal.
+
+### Fullspeed
+
+Les circuits « Fullspeed » ont, en moyenne, les plus grands déplacements horizontaux (`AvgAbsDisplacementHorizontal`), révolutions par minute (`AvgRPM`), vitesses vers l’avant (`AvgSpeedForward`) et vitesses absolues vers l’avant (`AvgAbsSpeedForward`), et sont plus souvent placés dans la zone de roulis parallèle aux murs (`PercentRollMiddleThird`). Ceci supporte nos hypothèses au sujet de l’étiquette « Fullspeed » et la définition dès l'installation du jeu de 2020^[Traduit, « Plein accélérateur le long du circuit. Longs virages fluides. Les boucles, la conduite sur les murs, et similaire sont communes. [...] De hautes vitesses sont attendues. » [@Eyebo2024]]. L’appui constant sur l’accélérateur élèverait les révolutions par minute du moteur et la vitesse vers l’avant (`AvgSpeedForward` et `AvgAbsSpeedForward`). Ajoutés à de hautes vitesses, des virages prolongés pousseront la voiture à traverser une plus grande distance (`AvgAbsDisplacementHorizontal`) durant son cheminement. Les balades murales pourraient, ensuite, être la cause du haussement de temps dans la zone de roulis situant la voiture près de perpendiculaire au sol (`PercentRollMiddleThird`), soit parallèle aux murs.
+
+### Circuits techniques
+
+Nous avons posé l’hypothèse que les circuits ayant les étiquettes « Tech » et « SpeedTech » se distingueraient par des pilotages et vitesses pointant souvent dans des sens inverses. Ceci est, en effet, le cas, visible dans la variable `AvgSpeedSidewardOppSteer`; les deux étiquettes ont des moyennes de moyennes^[C’est la moyenne de moyennes.] de vitesse latérale opposant le pilotage plus élevées comparées aux autres étiquettes.
+
+Plus intrigant encore, et que nous n’avons pas eu comme hypothèse: ces deux étiquettes ont des distributions similaires, se différenciant de manière prévisible. La « SpeedTech » réside à des vitesses (`AvgSpeedForward` et `AvgAbsSpeedForward`), RPMs (`AvgRPM`), durées en turbo (`PercentTurbo`) et déplacements (`AvgAbsDisplacementHorizontal` et `AvgAbsDisplacementY`) moyens légèrement plus hauts que les circuits « Tech », comme ce que suggère l’utilisation du mot « Speed ». Le « Tech », quant à lui, a plus de pilotage (`AvgAbsSteer`). Notez que, dans le jeu, faire des virages serrés, ou même déraper, ralenti la vitesse de la voiture. Les physiques du jeu soutiennent donc que l’augmentation de montant de pilotage du « Tech » réduit sa vitesse préférée, et inversement pour le « SpeedTech ». Les deux styles se basant sur la technique sont donc fortement similaires, se différenciant principalement par leurs caractéristiques de vitesse préférée.
+
+### Le grass-slide
+
+D’abord, nous avons eu l’hypothèse que l’étiquette « Grass » se distinguerait par une hausse de vitesse angulaire et de vitesse latérale. Les distributions de la variable `AvgAbsSpeedSideward`, ou la vitesse latérale absolue moyenne, supportent ceci. La moyenne de celui-ci pour les circuits « Grass » est la plus élevée parmi les autres étiquettes.
+
+## Quel modèle de classification est le plus représentatif ?
+
+Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la section « Quel modèle de classification servira le mieux ? ». Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
+
+$\[L_{log}(y,p) = -(y\log{p} + (1 - y)\log{1 - p})\]$
+
+
+
+## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+
+
+
+# Résultats {#sec-result}
+
 
 ![Les matrices de confusion des trois modèles statistiques utilisés: un simulacre simple, une régression logistique, et un amplification de gradients (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
 
