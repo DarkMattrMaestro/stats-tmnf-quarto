@@ -363,6 +363,8 @@ Les données sont d’abord séparées en groupes d'entraînement et de test. Ce
 
 ## Exploration pré-modèle
 
+En premier lieu, il n’y a aucune valeur manquante. Les échantillons sont récoltés dès TMNF-X qui, avant d’accepter une soumission de rediffusion ou de circuit, assure sa validité. La présence de fichier corrompu est donc rare, n’apparaissant aucune fois lors de l’échantillonnage. De plus, les cas où l’API de TMNF-X répond à la requête de fichier avec une erreur sont gérés par le programme de l’[Annexe -@sec-annex-a]. Si une requête renvoie continuellement des erreurs, le circuit est sauté puisqu’aucune information ne peut être récoltée. Le manque de valeurs manquantes suggère ainsi le bon fonctionnement du programme d’échantillonnage.
+
 Nous pouvons comparer les distributions de chaque variable selon la variable, soit le but de la @fig-violin-facet.
 
 ```{r}
