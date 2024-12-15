@@ -282,7 +282,7 @@ Il est fort probable que certaines techniques soient discernables avec les varia
 
 ### Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis}
 
-Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a cinq exigences principales.
+Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a quatre exigences principales.
 
 Le modèle doit d’abord \textbf{classifier de manière tabulaire} afin de pouvoir utiliser les données récoltées (« What is Tabular Classification? »). De tels modèles sont les Transformeurs tabulaires et k-NN [@KeitaIntroClassification], etc.
 
@@ -461,11 +461,11 @@ Plus intrigant encore, et que nous n’avons pas eu comme hypothèse: ces deux �
 
 ### Le grass-slide
 
-D’abord, nous avons eu l’hypothèse que l’étiquette « Grass » se distinguerait par une hausse de vitesse angulaire et de vitesse latérale. Les distributions de la variable `AvgAbsSpeedSideward`, ou la vitesse latérale absolue moyenne, supportent ceci. La moyenne de celui-ci pour les circuits « Grass » est la plus élevée parmi les autres étiquettes.
+Nous avons eu l’hypothèse que l’étiquette « Grass » se distinguerait par une hausse de vitesse angulaire et de vitesse latérale. Les distributions de la variable `AvgAbsSpeedSideward`, ou la vitesse latérale absolue moyenne, supportent ceci. La moyenne de celui-ci pour les circuits « Grass » est la plus élevée parmi les autres étiquettes.
 
 ## Quel modèle de classification est le plus représentatif ?
 
-Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la section « Quel modèle de classification servira le mieux ? ». Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
+Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la @sec-which-model-hypothesis. Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(1 - p\right)\right)$$
 ou
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(q\right)\right)$$
@@ -569,7 +569,7 @@ Le « SpeedTech » est principalement défini par son utilisation de turbo (`Per
 
 Le « Offroad » est caractérisé par sa moyenne de vitesses absolues latérale (`AvgAbsSpeedSideward`) et secondairement son biais moyen de pilotage (`AvgSteerBias`) ainsi que son biais moyen de vitesse latérale (`AvgSpeedSidewardBias`). Appliquant la logique des physiques du jeu, où il n’y a que peu de traction sur les routes de terre, la voiture devrait glisser souvent. Ceci n’est pas le cas, tout en ayant une importance notable pour ces caractéristiques. Les caractéristiques du « Offroad » devraient ainsi être explorées davantage afin de bien définir l’étiquette par moyen du cheminement de la voiture.
 
-Le « Fullspeed » correspond à la première demie de nos hypothèses à son sujet. Bien qu’il ait des rotations qui correspondent à nos hypothèses, il est caractérisé principalement par sa vitesse élevée. Sa vitesse moyenne vers l’avant (`AvgSpeedForward`) le caractérisant est centrée à `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["mean"]]` km/h et présente un écart type élevé de `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["sd"]]`.
+Le « Fullspeed » correspond à la première demie de nos hypothèses à son sujet. Bien qu’il ait des rotations qui correspondent à nos hypothèses, il est caractérisé principalement par sa vitesse élevée. Sa vitesse moyenne vers l’avant (`AvgSpeedForward`) le caractérisant est centrée à `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["mean"]]` km/h et présente un écart type élevé de `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["sd"]]` km/h.
 
 Le « Grass » et le « Normal » se rapprochent en leurs caractéristiques importantes. Les deux mettent l’accent sur la moyenne absolue de pilotage (`AvgAbsSteer`) et la moyenne absolue de vitesse avant (`AvgAbsSpeedForward`). Ils n’ont pas une forte importance, toutefois, les deux ont des vitesses et pilotages modérés.
 
@@ -628,7 +628,7 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 \textbf{Durée - Quantitative discrète}\quad{} Durée totale de la rediffusion, ayant comme unité 10 millisecondes. (provenant de Time de la rediffusions dans le fichier GBX)
 
-\textbf{Temps - Quantitative discrète}\quad{} Temps actuel de l’échantillon, ayant comme unité 10 millisecondes. (provenant de CGameGhost.Data.Sample.Time dans le fichier GBX)
+\textbf{Temps - Quantitative discrète}\quad{} Temps actuel de l’échantillon, ayant comme unité 100 millisecondes. (provenant de CGameGhost.Data.Sample.Time dans le fichier GBX)
 
 \textbf{RPM - Quantitative continue}\quad{} Révolutions par minute du moteur de la voiture. (provenant de CGameGhost.Data.Sample.RPM dans le fichier GBX)
 
@@ -650,11 +650,11 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 \newcommand{\vardef}[3]{\textbf{#1} \textcolor{gray}{$\in$ #3}\quad #2}
 
-\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (par unité de temps).}{$[0,\infty[$}
+\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (en unité de temps).}{$[0,\infty[$}
 
-\vardef{AvgAbsDisplacementY}{Le déplacement vertical absolu moyen (par unité de temps).}{$[0,\infty[$}
+\vardef{AvgAbsDisplacementY}{Le déplacement vertical absolu moyen (en une unité de temps).}{$[0,\infty[$}
 
-\vardef{AvgRPM}{La moyenne des révolutions par minute du moteur de la voiture (par unité de temps).}{$[0,\infty[$}
+\vardef{AvgRPM}{La moyenne des révolutions par minute du moteur de la voiture.}{$[0,\infty[$}
 
 \vardef{AvgSteerBias}{La moyenne du biais du pilotage, en pourcentage. Si le nombre d’entrées de droite équivaut à ceux de gauche, la valeur est 0. Si l’entrée de gauche ou de droite est tenue le long du cheminement, la valeur est 1.}{$[0,1]$}
 
