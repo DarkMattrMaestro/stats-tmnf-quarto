@@ -650,7 +650,7 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 \newcommand{\vardef}[3]{\textbf{#1} \textcolor{gray}{$\in$ #3}\quad #2}
 
-\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (en unité de temps).}{$[0,\infty[$}
+\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (en une unité de temps).}{$[0,\infty[$}
 
 \vardef{AvgAbsDisplacementY}{Le déplacement vertical absolu moyen (en une unité de temps).}{$[0,\infty[$}
 
