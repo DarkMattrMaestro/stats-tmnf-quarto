@@ -38,6 +38,7 @@ format:
     number-sections: true
     toc: true
     toc-title: "Table des matières"
+    toc-depth: 2
     lof: false
     lot: false
     titlepage: classic-lined 
@@ -68,7 +69,6 @@ format:
       25 octobre 2024\
     keep-tex: true
     geometry:
-      - showframe
       - inner=2cm
       - outer=2cm
       - top=3cm
@@ -280,7 +280,7 @@ Cette section couvre les questions provoquant l’étude actuelle.
 
 Il est fort probable que certaines techniques soient discernables avec les variations de variables récoltées. Une telle technique pourrait être la « grass-slide », où la voiture est positionnée à 90° et fait un virage agressif [@Tunachopps]. Dans ce cas, nous estimons une hausse de vitesse angulaire et de vitesse latérale comparée au restant du circuit. D’autres techniques/bogues potentiellement discernables seraient la « edge-bogue », la « uber-bogue » et la « nose-bogue » qui changent drastiquement le vecteur vitesse^[Pour une démonstration, voir la vidéo par Kimura et al.]. Un aperçu de la distribution de bogues ou autres provoquant de grands changements sera visible par des graphiques à violons multiples de la différence maximale et moyenne de vecteur vitesse selon l’étiquette et de la différence maximale et moyenne de vitesse latérale selon l’étiquette. Sachant que la définition de l’étiquette « PressForward » dans Trackmania 2020 indique la présence d’acrobaties normalement impossibles manuellement, il est probable que de tels changements drastiques de vitesse soient présents.
 
-## Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis}
+### Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis}
 
 Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a cinq exigences principales.
 
@@ -298,7 +298,7 @@ Afin de déterminer le modèle le plus représentatif, les modèles peuvent êtr
 
 Un modèle de simulacre sera d’abord utilisé afin d’assigner un point de départ. Un modèle de régression logistique sera, ensuite, utilisé comme modèle simple et souvent efficace. Finalement, un modèle d’amplification de gradients est prévu être le plus représentatif.
 
-## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+### Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
 
 Utilisant les définitions fournies pour Trackmania 2020 comme base, nous croyons que l’étiquette « Fullspeed » pourrait être différentiable par la vitesse vers l’avant élevée en raison de l’appui constant sur l’accélérateur et des virages prolongés [@Eyebo2024], le roulis en raison des « wallrides » et le déplacement total en raison du peu de virages courts.
 
