@@ -109,7 +109,42 @@ def bar_plot():
 def violin_plot():
   exp = get_explanation()
   
-  shap.plots.violin(exp, max_display=17, show=False)
+  shap.plots.violin(
+    exp.abs.abs,
+    max_display=17,
+    color="green",
+    axis_color="#333333",
+    title=None,
+    alpha=1,
+    show=False,
+    sort=True,
+    color_bar=True,
+    plot_size="auto",
+    layered_violin_max_num_bins=20,
+    class_names=None,
+    cmap=plt.cm.cool,
+  )
+  # shap.plots.violin(exp.abs.abs, color="red", max_display=17, show=False)
+
+def beeswarm_plot():
+  exp = get_explanation()
+  
+  # shap.plots.beeswarm(exp.abs, color="blue", max_display=17, show=False)
+  
+  shap.plots.beeswarm(
+    exp.abs,
+    max_display=17,
+    clustering=None,
+    cluster_threshold=0.01,
+    color="blue",
+    axis_color="#333333",
+    alpha=0.2,
+    show=False,
+    log_scale=False,
+    color_bar=False,
+    s=8,
+    plot_size=(16,8)
+  )
 
 def waterfall_plot(i=0):
   exp = get_explanation()
@@ -129,7 +164,12 @@ def render_all():
   
   # Violin plot
   violin_plot()
-  plt.savefig("rendered-figs/fig-violin.pdf")
+  plt.savefig("rendered-figs/fig-violin1.pdf")
+  plt.clf()
+  
+  # Violin plot
+  beeswarm_plot()
+  plt.savefig("rendered-figs/fig-beeswarm.pdf")
   plt.clf()
   
   # Waterfall [0] plot

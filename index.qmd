@@ -495,6 +495,10 @@ $$R = \frac{\displaystyle\sum_{i=1}^{n}R_{i}}{n}$$
 
 La précision et le rappel de chaque classe — soit l’étiquette dans Trackmania — pour chacun des trois modèles sont présentés dans le @tbl-rapport-classification. Notez que la précision de chaque étiquette dans le tableau équivaut au nombre d’échantillons bien prédit divisé par la somme de la colonne, et que le rappel est de même excepté que l’on divise par la somme de la rangée.
 
+\quad
+
+\quad
+
 ```{r}
 #| label: tbl-rapport-classification
 #| exho: FALSE
@@ -565,15 +569,12 @@ Nous pouvons constater que le rappel a eu les plus grandes augmentations par le 
 
 ![Les corrélations entre la valeur SHAP et la valeur de chaque variable. Les barres grises indiquent la dansité.](rendered-figs/fig-scatter.pdf){#fig-scatter out-width=100% fig-align='center'}
 
-![................](rendered-figs/fig-violin.pdf){#fig-violin out-width=100% fig-align='center'}
+![................](rendered-figs/fig-beeswarm.pdf){#fig-beeswarm out-width=100% fig-align='center'}
 
 ![................](rendered-figs/fig-waterfall-0.pdf){#fig-waterfall-0 out-width=100% fig-align='center'}
 
 # Discussion {#sec-discussion}
 
-
-
-# Conclusion {#sec-conclusion}
 
 
 
