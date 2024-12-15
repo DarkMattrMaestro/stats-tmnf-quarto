@@ -42,7 +42,7 @@ format:
     titlepage: classic-lined 
     titlepage-logo: "img/car-jump.png"
     titlepage-theme:
-      elements: ["\\titleblock", "\\authorblock", "\\logoblock", "\\footerblock"]
+      elements: ["\\titleblock", "Nicolas Kmita", "\\vspace{0.8cm}", "\\logoblock", "\\footerblock"] #"\\authorblock", 
       page-align: "center"
       title-style: "doublelinewide"
       title-fontsize: 30
@@ -333,11 +333,11 @@ Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, O
 \label{Exclusions}
 \end{table}
 
-Les données récoltées de cette étude observationnelle sont d’abord stratifiées selon l’étiquette de chaque circuit, choisissant aléatoirement ≥1113 circuits par strate. Ceci permet d’atteindre et dépasser la taille minimale pseudo-magique de 30 échantillons tout en ne prenant pas une durée non raisonnable à décortiquer les fichiers avec le programme de l’TODO:Annexe A. Ensuite, le record sur chaque circuit, soit la rediffusion ayant le temps de terminaison le plus bas, est tiré dès l’API du site TMNF-X. Seuls les circuits ayant plus de cinq rediffusions soumis sur TMNF-X sont considérés. Ces deux dernières conditions visent à diminuer le nombre de rediffusions à moitié effort entrant dans l’échantillon, ce qui permet une meilleure représentativité du chemin du circuit, comme décrit dans la @sec-competent. Après l’échantillonnage, les rediffusions sont analysées^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] afin de ressortir les métadonnées et calculer d’autres renseignements utiles, soit de procurer la variable dépendante et les variables indépendantes et confondantes. L’TODO:Annexe A présente le programme appliquant la stratégie d’échantillonnage et d’analyse^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] de rediffusions décrite^[Notez qu’il est possible de voir les résultats sans exécuter le code en visionnant le fichier `MainCodebase.ipynb`.].
+Les données récoltées de cette étude observationnelle sont d’abord stratifiées selon l’étiquette de chaque circuit, choisissant aléatoirement ≥1113 circuits par strate. Ceci permet d’atteindre et dépasser la taille minimale pseudo-magique de 30 échantillons tout en ne prenant pas une durée non raisonnable à décortiquer les fichiers avec le programme de l'[Annexe -@sec-annex-a]. Ensuite, le record sur chaque circuit, soit la rediffusion ayant le temps de terminaison le plus bas, est tiré dès l’API du site TMNF-X. Seuls les circuits ayant plus de cinq rediffusions soumis sur TMNF-X sont considérés. Ces deux dernières conditions visent à diminuer le nombre de rediffusions à moitié effort entrant dans l’échantillon, ce qui permet une meilleure représentativité du chemin du circuit, comme décrit dans la @sec-competent. Après l’échantillonnage, les rediffusions sont analysées^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] afin de ressortir les métadonnées et calculer d’autres renseignements utiles, soit de procurer la variable dépendante et les variables indépendantes et confondantes. L’[Annexe -@sec-annex-a] présente le programme appliquant la stratégie d’échantillonnage et d’analyse^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] de rediffusions décrite^[Notez qu’il est possible de voir les résultats sans exécuter le code en visionnant le fichier `MainCodebase.ipynb`.].
 
 ## Sources des données
 
-Les données de chaque circuit et rediffusion sont tirées dès le serveur de TMNF-X. L’étiquette est indiquée directement dans les informations de chaque circuit; la durée du circuit se trouve dans les informations extraites de la rediffusion; puis le restant des données sont ressorties de chaque échantillon de l’état du jeu^[Trackmania Nations Forever sauvegarde un aperçu approximatif du jeu à chaque 100 millisecondes dans chaque fichier de rediffusion.]. Un aperçu plus détaillé des variables se trouve dans l’TODO:Annexe B.
+Les données de chaque circuit et rediffusion sont tirées dès le serveur de TMNF-X. L’étiquette est indiquée directement dans les informations de chaque circuit; la durée du circuit se trouve dans les informations extraites de la rediffusion; puis le restant des données sont ressorties de chaque échantillon de l’état du jeu^[Trackmania Nations Forever sauvegarde un aperçu approximatif du jeu à chaque 100 millisecondes dans chaque fichier de rediffusion.]. Un aperçu plus détaillé des variables se trouve dans l’[Annexe -@sec-annex-b].
 
 TMNF-X est à la fois une source primaire et secondaire. Des données telles que le type de circuit sont tirées dès l’API de TMNF-X, ce qui lui rend une source secondaire. D’autres données sont récoltées directement dès les fichiers de rediffusion des circuits stockés sur TMNF-X^[Les fichiers de rediffusion sont stockés sur les serveurs de TMNF-X, mais l’API de TMNF-X n’expose pas les données de ces rediffusions.], ce qui le rend également une source primaire.
 
@@ -351,7 +351,9 @@ Il y a également certains calculs lors de la récolte des données qui pourraie
 
 ## Entraînement des modèles prédictifs
 
-Les données sont échantillonnées également entre chaque étiquette. Le nombre de circuits « Normal » échantillonnés est égal à celui des circuits « Offroad » qui est, lui aussi, égale à celui des circuits « Fullspeed », etc. Ceci prévient certains biais résultant de déséquilibres dans la quantité de données pour chaque étiquette. Ceci prévient également la nécessité de rééchantillonnage^[Exemples: rééchantillonnage par grappe, sous-rééchantillonnage, suréchantillonnage SMOTE [@KeitaIntroClassification; @ChawlaAIResearch].] [@KeitaIntroClassification; @ChawlaAIResearch pp. 322] ou de modèles spécialisés qui prennent en compte les coûts de la classification incorrecte^[Tels que les machines à support vectoriel sensible aux coûts [@SVM2019].].
+Les données hiérarchiques, soit contenues dans des échantillons de temps, sont aplaties afin de pouvoir être traitées par les modèles. Des caractéristiques principales, soit les variables de l’[Annexe -@sec-annex-c], sont calculées d’après les variables extraits de TMNF-X et les fichiers de rediffusions, soit les variables de l’[Annexe -@sec-annex-b].
+
+Ces données sont échantillonnées également entre chaque étiquette. Le nombre de circuits « Normal » échantillonnés est égal à celui des circuits « Offroad » qui est, lui aussi, égale à celui des circuits « Fullspeed », etc. Ceci prévient certains biais résultant de déséquilibres dans la quantité de données pour chaque étiquette. Ceci prévient également la nécessité de rééchantillonnage^[Exemples: rééchantillonnage par grappe, sous-rééchantillonnage, suréchantillonnage SMOTE [@KeitaIntroClassification; @ChawlaAIResearch].] [@KeitaIntroClassification; @ChawlaAIResearch pp. 322] ou de modèles spécialisés qui prennent en compte les coûts de la classification incorrecte^[Tels que les machines à support vectoriel sensible aux coûts [@SVM2019].].
 
 Les données sont d’abord séparées en groupes d'entraînement et de test. Ceci prévient le surajustement des modèles sur les données d’entraînement. L’utilisation de données externes de ceux qui servent à entraîner donne un indice de ce qu’a vraiment compris le modèle. Le but n’est pas d’entraîner des modèles qui mémorisent les réponses, mais plutôt d’entraîner des modèles pouvant suivre des motifs et généraliser; interpoler et extrapoler.
 
@@ -579,13 +581,72 @@ Nous pouvons constater que le rappel a eu les plus grandes augmentations par le 
 
 # Annexe {#sec-annex}
 
-## A - Programme d’échantillonnage {.unnumbered}
+## Programme d’échantillonnage {#sec-annex-a}
 
-## B - Variables de base {.unnumbered}
+\hangindent=1.5em
+\hangafter=1
+Kmita, Nicolas. 2024. « StatsProjectTMNF ». \textit{Github}. [https://github.com/DarkMattrMaestro/Stats](https://github.com/DarkMattrMaestro/StatsProjectTMNF) [ProjectTMNF](https://github.com/DarkMattrMaestro/StatsProjectTMNF).
+
+## Données {#sec-annex-d}
+
+Les données aplaties utilisées pour l'entrainement et le test des modèles ainsi que des visualisations sont accessibles par [https://drive.google.com/file/d/1xbHTOrddKNGHkwa_qe0iCK4BVPzUMw5H/view?usp=sharing](https://drive.google.com/file/d/1xbHTOrddKNGHkwa_qe0iCK4BVPzUMw5H/view?usp=sharing).
+
+Un certain montant des données hiérarchiques est accessible par [https://drive.google.com/file/d/1i7JCl4wkgP5POx9V_B7-xPKqwKJ61xZp/view?usp=sharing](https://drive.google.com/file/d/1i7JCl4wkgP5POx9V_B7-xPKqwKJ61xZp/view?usp=sharing). Notez que le programme d'échantillonnage ne sauvegardait pas toutes les données hiérarchiques vers le début de l'échantillonnage. Ainsi, certains échantillons qui se trouvent dans les données aplaties sont manquants dans les données hiérarchiques.
+
+## Variables de base {#sec-annex-b}
 
 Une majorité des variables sont extraites directement de fichiers GBX avec l’outil à source ouverte [GBX.NET2](https://github.com/BigBang1112/gbx-net) [@GBXNET]. Les spécifications de la relation de parenté entre les variables originales, soit des objets, se trouvent dans le répertoire du projet. Pour les échantillons, l’objet se nomme [CSceneVehicleCar.Sample](https://github.com/BigBang1112/gbx-net/blob/master/Src/GBX.NET/Engines/Scene/CSceneVehicleCar.Sample.cs) [@GBXNET].
 
-Étiquette - Qualitative nominale
-L’étiquette du circuit. (provenant de l’API de TMNF-X)
+\textbf{Étiquette - Qualitative nominale}\quad{} L’étiquette du circuit. (provenant de l’API de TMNF-X)
 
-\textbf{Étiquette} - Qualitative nominale\quad{}
+\textbf{EstTurbo - Qualitative nominale}\quad{} Booléen de la présence d’un turbo. (provenant de CGameGhost.Data.Sample.IsTurbo dans le fichier GBX)
+
+\textbf{Durée - Quantitative discrète}\quad{} Durée totale de la rediffusion, ayant comme unité 10 millisecondes. (provenant de Time de la rediffusions dans le fichier GBX)
+
+\textbf{Temps - Quantitative discrète}\quad{} Temps actuel de l’échantillon, ayant comme unité 10 millisecondes. (provenant de CGameGhost.Data.Sample.Time dans le fichier GBX)
+
+\textbf{RPM - Quantitative continue}\quad{} Révolutions par minute du moteur de la voiture. (provenant de CGameGhost.Data.Sample.RPM dans le fichier GBX)
+
+\textbf{Vitesse avant - Quantitative continue}\quad{} Vitesse vers l’avant de la voiture. (provenant de CGameGhost.Data.Sample.SpeedForward dans le fichier GBX)
+
+\textbf{Vitesse latérale - Quantitative continue}\quad{} Vitesse vers le côté de la voiture, soit perpendiculaire à la direction dont la voiture se pointe. La vitesse pointe vers la gauche lorsque la vitesse est positive et vers la droite lorsque la vitesse est négative. (provenant de CGameGhost.Data.Sample.SpeedSideward dans le fichier GBX)
+
+\textbf{Pilotage - Quantitative continue}\quad{} Le pilotage de la voiture, soit au travers du volan en-jeu. Un pilotage positif tourne vers la droite et un pilotage négatif tourne vers la gauche. (provenant de CGameGhost.Data.Sample.Steer dans le fichier GBX)
+
+\textbf{Vitesse angulaire - Quantitative continue}\quad{} Vecteur vitesse angulaire en 3 dimensions. (provenant de CGameGhost.Data.Sample.AngularVelocity dans le fichier GBX)
+
+\textbf{Tangage, lacet et roulis - Quantitative continue}\quad{} Tangage, lacet et roulis de la voiture. (conversion de CGameGhost.Data.Sample.Rotation en Euler)
+
+\textbf{Position - Quantitative continue}\quad{} Position de la voiture à un instant en 3 dimensions. (provenant de CGameGhost.Data.Sample.Position dans le fichier GBX)
+
+\textbf{}\quad{} 
+
+## Variables aplaties {#sec-annex-c}
+
+\newcommand{\vardef}[3]{\textbf{#1} \textcolor{gray}{$\in$ #3}\quad #2}
+
+\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (par unité de temps).}{$[0,\infty[$}
+
+\vardef{AvgAbsDisplacementY}{Le déplacement vertical absolu moyen (par unité de temps).}{$[0,\infty[$}
+
+\vardef{AvgRPM}{La moyenne des révolutions par minute du moteur de la voiture (par unité de temps).}{$[0,\infty[$}
+
+\vardef{AvgSteerBias}{La moyenne du biais du pilotage, en pourcentage. Si le nombre d’entrées de droite équivaut à ceux de gauche, la valeur est 0. Si l’entrée de gauche ou de droite est tenue le long du cheminement, la valeur est 1.}{$[0,1]$}
+
+\vardef{AvgAbsSteer}{La moyenne du pilotage, sans différenciation de direction, en pourcentage.}{$[0,1]$}
+
+\vardef{AvgSpeedForward}{La moyenne de la vitesse avant. Une vitesse vers l’avant est positive et une vitesse reculée est négative.}{$]-\infty,\infty[$}
+
+\vardef{AvgAbsSpeedForward}{La moyenne absolue des vitesses avant.}{$[0,\infty[$}
+
+\vardef{AvgSpeedSidewardBais}{La moyenne absolue du biais de la vitesse latérale de la voiture. Si la somme des vitesses latérales vers la gauche équivaut à la somme de ceux de droite, la valeur est 0.}{$[0,\infty[$}
+
+\vardef{AvgAbsSpeedSideward}{La moyenne absolue des vitesses latérales.}{$[0,\infty[$}
+
+\vardef{AvgSpeedSidewardOppSteer}{L'inclinaison moyenne de l'opposition des directions de la vitesse latérale et du pilotage. La valeur tend vers 1 lorsqu’ils sont du même signe et vers -1 lorsqu’ils sont de signes différents.}{$[-1, 1]$}
+
+\vardef{PercentPitch——Third}{Le pourcentage des d’unités de temps où le tangage absolu se trouve dans le tiers désigné, soit le premier, deuxième ou troisième tiers.}{$[0, 1]$}
+
+\vardef{PercentRoll——Third}{Le pourcentage des d’unités de temps où le roulis absolu se trouve dans le tiers désigné, soit le premier, deuxième ou troisième tiers.}{$[0, 1]$}
+
+\vardef{PercentTurbo}{Le pourcentage d’unités de temps où la voiture est sous l’effet d’un turbo.}{$[0, 1]$}
