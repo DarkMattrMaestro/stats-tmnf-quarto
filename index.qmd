@@ -311,7 +311,7 @@ La vérification de ces hypothèses se fait par moyen d’une analyse du modèle
 
 La population de cette étude est comprise des circuits publiés sur TMNF-X [@TMNFX] ayant une seule étiquette assignée, et ne nécessitant aucune modification du jeu telle que TMUnlimiter [@TomekUnlimiter]. Ces circuits sont également du type « Race », puisque c’est le seul type permettant une course habituelle. La taille de la population sera ainsi d’environ 600 000 circuits^[Ceci est une approximation selon le nombre total de circuits [@TMNFXStats].]. Le record mondial sur chaque circuit en est inclus.
 
-Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} } sont analysées dès la liste d’étiquettes, soit { \textcolor{gray}{Normal, Stunt, Maze, Offroad, Laps, Fullspeed, LOL, Tech, SpeedTech, RPG, PressForward, Trial, Grass} }. Les étiquettes exclues vont à l’encontre du but de l’étude, ne pourraient pas raisonnablement être analysées dans les délais prescrits, ou les deux cas simultanément. Les raisons d’exclusions précises à chaque étiquette se trouvent dans le Tableau \ref{Exclusions} qui suit.
+Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} } sont analysées dès la liste d’étiquettes, soit { \textcolor{gray}{Normal, Stunt, Maze, Offroad, Laps, Fullspeed, LOL, Tech, SpeedTech, RPG, PressForward, Trial, Grass} }. Les étiquettes exclues vont à l’encontre du but de l’étude, ne pourraient pas raisonnablement être analysées dans les délais prescrits, ou les deux cas simultanément. Les raisons d’exclusions précises à chaque étiquette se trouvent dans le Tableau 3.1 qui suit.
 
 \begin{table}[H]
 \centering
