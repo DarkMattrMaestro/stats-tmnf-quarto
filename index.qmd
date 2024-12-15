@@ -439,13 +439,13 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 
 ```
 
-### Le variant
+### Le variant {#sec-variant}
 
 Débutant avec des impressions générales, les circuits « PressForward » ont les plus grandes variances. Ce motif suggère que cette étiquette contient des circuits qui diffèrent grandement entre eux. Ceci est en accord avec notre hypothèse originale selon laquelle la variance serait présente dû à des acrobaties extrêmes. La présence d’acrobaties où la voiture roulerait dans l’air est probablement ce qui a engendré les variations des déplacements horizontaux (`AvgAbsDisplacementHorizontal`) et verticaux (`AvgAbsDisplacementY`), des vitesses vers l’avant (`AvgSpeedForward`) et latérale (`AvgAbsSpeedSideward`), et de l’orientation moyenne de la voiture (`PercentPitch——Third` et `PercentRoll——Third`), démontrées dans la @fig-violin-facet.
 
 Il est également notable que les circuits « PressForward » aient des biais de pilotage (`AvgSteerBias`) et des pilotages totaux (`AvgAbsSteer`) qui varient largement. Si les circuits de cette étiquette suivent exactement le nom — seulement appuyer la touche avant —, il n’y aurait aucun biais et aucun pilotage. Ceci n’est pas le cas, mais il y a également la possibilité qu’une touche directionnelle soit tenue le long du circuit. Dans ce cas, le biais et le pilotage seraient chacun soit 0% ou 100%. Ceci n’est également pas toujours le cas: les variables sont distribuées d’une manière non binaire. Il y a ainsi des joueurs qui modifient leurs entrées lors de leur cheminement. Il est donc plus difficile de déterminer un motif pouvant identifier un circuit « PressForward » au moyen d’un cheminement.
 
-### L’impossibilité
+### L’impossibilité {#sec-impossible}
 
 La seule variable sans variance est le pourcentage de roulis se situant dans le tiers le plus haut (`PercentRollUpperThird`). Bien que ceci paraisse être en raison d’un manque de cheminements aberrants plaçant la voiture à l’envers, ce n’est pas le cas. Plutôt, le calcul qui convertit le quaternion de rotation vers le tangage, lacet et roulis priorise le tangage au roulis. Il est ainsi impossible d’avoir un pourcentage élevé de roulis dans le tiers maximal.
 
@@ -469,7 +469,7 @@ Nous avons décidé d’utiliser un modèle d’amplification de gradients à cl
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(1 - p\right)\right)$$
 ou
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(q\right)\right)$$
-où $y$ est la valeur réelle et $p$ est la probabilité estimée [@scikitLogLoss].
+où $y$ est la valeur réelle, $p$ est la probabilité estimée et $q$ est le pourcentage complémentaire de $p$ [@scikitLogLoss].
 
 Un modèle de régression logistique est, ensuite, utilisé afin d’assurer que la complexité du modèle d’amplification de gradients ne rend pas pire la représentativité potentielle d’un modèle. Ça agit comme un point de référence de modèles plus simples. Afin de ne pas accidentellement mal ajuster les paramètres du modèle de référence, les paramètres n’ont été modifiés que minimalement.
 
@@ -551,19 +551,39 @@ report_pivot_df %>%
 
 Nous pouvons constater que le rappel a eu les plus grandes augmentations par le changement du modèle de régression logistique vers l’amplification de gradients. Tandis que la précision voit une augmentation maximale d’environ $30,91\%$ (voir l’étiquette « Grass »), le rappel voit des augmentations d’environ $49,64\%$ et $55,99\%$ pour les étiquettes « PressForward » et « FullSpeed » respectivement. Ceci suggère que la complexité supplémentaire a permis au modèle d’amplification de gradient à extraire des motifs moins évidents pour des étiquettes précises. Décrit visuellement, le modèle aurait découvert des motifs qui peuvent nettoyer une rangée des matrices de confusion de la @fig-model-stats à la fois.
 
-
-
-
 ## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
 
+En utilisant la technique d’explication SHAP sur le modèle d’amplification de gradients, avec les données d’entraînement et de test, nous pouvons ressortir l’importance de chaque variable sur la prédiction. Une haute importance signifie qu’une classe est précisément définie par la caractéristique; la caractéristique est intégrale^[Pas dans le sens mathématique d’une intégrale (soit $\int$).] à la prédiction de la classe. La @fig-importance-bar présente les importances moyennes de chaque variable.
 
+![L'impacte moyenne de chaque variable sur la prédiction du modèle, soit moy(|valeur SHAP|)](rendered-figs/fig-bar.pdf){#fig-importance-bar width=100% fig-align='center'}
+
+Nous pouvons constater que PercentRollUpperThird a une importance négligeable. Son maintien d’une variance nulle, mentionné dans la @sec-impossible, ne facilite aucunement la prédiction d’une étiquette.
+
+Le « Tech », « SpeedTech », « Offroad » et « Fullspeed » ont de hautes importances en général, tandis que « LOL » n’en a que peu. Ceci est aussi reflété dans la @fig-model-stats, où ceux portant plus d’importances ont plus de prédictions valides et inversement pour le « LOL ». En nous basant sur le modèle, nous pouvons conclure que l’étiquette « LOL » est la moins bien définie. Il est notable que les deux étiquettes ayant le mot « technique » dans leur nom soient les mieux définies.
+
+En nous fixant sur la @fig-importance-bar, le « Tech » est défini par sa vitesse latérale (`AvgAbsSpeedSideward`), son montant de pilotage (`AvgAbsSteer`) et son déplacement horizontal (`AvgAbsDisplacementHorizontal`). Cela n’implique pas que les valeurs de ces trois variables doivent s’élever pour prédire « Tech », mais plutôt que leur proximité aux valeurs attendues est priorisée par le modèle. En reliant les données de la @fig-violin-facet, le « Tech » est mieux défini par une moyenne de vitesses absolues latérale aux alentours de {AvgAbsSpeedSideward ~ Tech moyenne} km/h, un pilotage absolu moyen aux alentours de {AvgAbsSteer ~ Tech moyenne} % et une moyenne de déplacements horizontaux près de {AvgAbsDisplacementHorizontal ~ Tech moyenne} km.
+
+Les mêmes étapes peuvent être appliquées aux autres étiquettes afin de les définir en quelque sorte.
+
+Le « SpeedTech » est principalement défini par son utilisation de turbo (`PercentTurbo`) qui se situe autour de {PercentTurbo ~ SpeedTech moyenne} %. Il est aussi, mais avec moins d'ampleur, définie par un pilotage absolu moyen près de {AvgAbsSteer ~ Tech moyenne} %. Il est intéressant à noter que le « Tech » et le « SpeedTech », qui ont, les deux, des noms similaires, se différencient par leur accent sur la vitesse. Le « Tech » préfère beaucoup de virages, tandis que le « SpeedTech » préfère les turbos et des vitesses plus variées.
+
+Le « Offroad » est caractérisé par sa moyenne de vitesses absolues latérale (`AvgAbsSpeedSideward`) et secondairement son biais moyen de pilotage (`AvgSteerBias`) ainsi que son biais moyen de vitesse latérale (`AvgSpeedSidewardBias`). Appliquant la logique des physiques du jeu, où il n’y a que peu de traction sur les routes de terre, la voiture devrait glisser souvent. Ceci n’est pas le cas, tout en ayant une importance notable pour ces caractéristiques. Les caractéristiques du « Offroad » devraient ainsi être explorées davantage afin de bien définir l’étiquette par moyen du cheminement de la voiture.
+
+Le « Fullspeed » correspond à la première demie de nos hypothèses à son sujet. Bien qu’il ait des rotations qui correspondent à nos hypothèses, il est caractérisé principalement par sa vitesse élevée. Sa vitesse moyenne vers l’avant (`AvgSpeedForward`) le caractérisant est centrée à {AvgSpeedForward ~ Fullspeed moyenne} et présente un écart type élevé de {AvgSpeedForward ~ Fullspeed standard-deviation}.
+
+Le « Grass » et le « Normal » se rapprochent en leurs caractéristiques importantes. Les deux mettent l’accent sur la moyenne absolue de pilotage (`AvgAbsSteer`) et la moyenne absolue de vitesse avant (`AvgAbsSpeedForward`). Ils n’ont pas une forte importance, toutefois, les deux ont des vitesses et pilotages modérés.
+
+Le « PressForward » est principalement caractérisé par sa moyenne absolue de pilotage. Bien que ce soit évident de supposer que c’est la seule étiquette où les joueurs n’appuient qu’une entrée, ce n’est pas entièrement le cas. Comme mentionné dans la @sec-variant, de nombreux joueurs appuient des entrées le long du cheminement, ce qui rend plus difficile la prédiction de cette étiquette.
+
+Finalement, « LOL » est la seule étiquette sans caractéristiques notables découvertes par les modèles. En vérifiant avec la @fig-model-stats et le @tbl-rapport-classification, nous pouvons constater que c’est le pire estimé. Il est donc probable que l’étiquette « LOL » est un méli-mélo de styles de conduite.
+
+Généralement, les caractéristiques se centrant sur la rotation de la voiture à un instant n’informent que peu de l’étiquette actuelle. En fait, ces six caractéristiques sont les six caractéristiques les pires pour la totalité des étiquettes. Il serait donc à réviser l’inclusion et l’implémentation de ceux-ci dans le cas d’un modèle futur.
 
 # Résultats {#sec-result}
 
 
 
 
-![L'impacte moyenne de chaque variable sur la prédiction du modèle, soit moy(|valeur SHAP|)](rendered-figs/fig-bar.pdf){#fig-importance-bar width=100% fig-align='center'}
 
 # Discussion {#sec-discussion}
 
