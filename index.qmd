@@ -467,7 +467,9 @@ D’abord, nous avons eu l’hypothèse que l’étiquette « Grass » se distin
 
 Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la section « Quel modèle de classification servira le mieux ? ». Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(1 - p\right)\right)$$
-où $y$ est la valeur réelle et $p$ est la probabilité estimée.
+ou
+$$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(q\right)\right)$$
+où $y$ est la valeur réelle et $p$ est la probabilité estimée [@scikitLogLoss].
 
 Un modèle de régression logistique est, ensuite, utilisé afin d’assurer que la complexité du modèle d’amplification de gradients ne rend pas pire la représentativité potentielle d’un modèle. Ça agit comme un point de référence de modèles plus simples. Afin de ne pas accidentellement mal ajuster les paramètres du modèle de référence, les paramètres n’ont été modifiés que minimalement.
 
@@ -494,6 +496,8 @@ La formule du rappel moyen est ensuite
 $$R = \frac{\displaystyle\sum_{i=1}^{n}R_{i}}{n}$$
 
 La précision et le rappel de chaque classe — soit l’étiquette dans Trackmania — pour chacun des trois modèles sont présentés dans le @tbl-rapport-classification. Notez que la précision de chaque étiquette dans le tableau équivaut au nombre d’échantillons bien prédit divisé par la somme de la colonne, et que le rappel est de même excepté que l’on divise par la somme de la rangée.
+
+\quad
 
 \quad
 
@@ -565,13 +569,7 @@ Nous pouvons constater que le rappel a eu les plus grandes augmentations par le 
 
 
 
-![La moyenne absolue des valeurs SHAP de chaque variable indépendante.](rendered-figs/fig-bar.pdf){#fig-importance-bar out-width=100% fig-align='center'}
-
-![Les corrélations entre la valeur SHAP et la valeur de chaque variable. Les barres grises indiquent la dansité.](rendered-figs/fig-scatter.pdf){#fig-scatter out-width=100% fig-align='center'}
-
-![................](rendered-figs/fig-beeswarm.pdf){#fig-beeswarm out-width=100% fig-align='center'}
-
-![................](rendered-figs/fig-waterfall-0.pdf){#fig-waterfall-0 out-width=100% fig-align='center'}
+![L'impacte moyenne de chaque variable sur la prédiction du modèle, soit moy(|valeur SHAP|)](rendered-figs/fig-bar.pdf){#fig-importance-bar width=100% fig-align='center'}
 
 # Discussion {#sec-discussion}
 
