@@ -234,7 +234,7 @@ Le nom étiquette peut mener à confusion en discutant de modèles de classifica
 
 \quad
 
-\textbf{TMNF}\quad{} TMNF est l’abréviation du titre Trackmania Nations Forever, le jeu de course d’arcade analysé dans cet article.
+\textbf{TMNF}\quad{} TMNF est l’abréviation du titre Trackmania Nations Forever, le jeu de course d’arcade analysé dans ce rapport.
 
 \quad
 
@@ -496,12 +496,6 @@ La formule du rappel moyen est ensuite
 $$R = \frac{\displaystyle\sum_{i=1}^{n}R_{i}}{n}$$
 
 La précision et le rappel de chaque classe — soit l’étiquette dans Trackmania — pour chacun des trois modèles sont présentés dans le @tbl-rapport-classification. Notez que la précision de chaque étiquette dans le tableau équivaut au nombre d’échantillons bien prédit divisé par la somme de la colonne, et que le rappel est de même excepté que l’on divise par la somme de la rangée.
-
-\quad
-
-\quad
-
-\quad
 
 ```{r}
 #| label: tbl-rapport-classification
