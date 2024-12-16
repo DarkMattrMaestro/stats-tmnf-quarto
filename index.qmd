@@ -224,11 +224,11 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 
 # Glossaire
 
-\textbf{API}\quad{} Une API, soit une interface de programmation d’applications, est l’interface entre un programme et un autre. Dans le cas de cet article, l’API de TMNF-X est l’interface utilisée pour communiquer avec la base de données de TMNF-X.
+\textbf{API}\quad{} Une API, c'est-à-dire une interface de programmation d’applications, est l’interface entre un programme et un autre. Dans le cas de cet article, l’API de TMNF-X est l’interface utilisée pour communiquer avec la base de données de TMNF-X.
 
 \quad
 
-\textbf{Étiquette}\quad{} L’étiquette, ou « tag » en anglais, est le descripteur principal d’un circuit. Il n’y a pas de définitions officielles des différentes étiquettes de Trackmania Nations Forever, toutefois, l’installation Trackmania 2020 a été fournie quelques définitions des mêmes étiquettes. Les définitions fournies pour Trackmania 2020 ne sont pas compatibles avec TMNF en raison des différences majeures entre les deux installations.
+\textbf{Étiquette}\quad{} L’étiquette, ou « tag » en anglais, agit comme descripteur principal d’un circuit. Il n’y a pas de définitions officielles des différentes étiquettes de Trackmania Nations Forever, toutefois, l’installation Trackmania 2020 a été fournie quelques définitions des mêmes étiquettes. Les définitions fournies pour Trackmania 2020 ne sont pas compatibles avec TMNF en raison des différences majeures entre les deux installations.
 
 Le nom étiquette peut mener à confusion en discutant de modèles de classification puisqu’il y a la classification à classes multiples et à étiquettes multiples. Les deux catégories de modèles sont entièrement différentes. Le modèle d’amplification de gradients que nous utilisons plus tard dans ce rapport utilise des classes multiples. Ainsi, l’utilisation du terme « étiquette » en discutant du modèle fait référence aux étiquettes de Trackmania et non des étiquettes par rapport aux statistiques.
 
@@ -449,7 +449,7 @@ Il est également notable que les circuits « PressForward » aient des biais de
 
 La seule variable sans variance est le pourcentage de roulis se situant dans le tiers le plus haut (`PercentRollUpperThird`). Bien que ceci paraisse être en raison d’un manque de cheminements aberrants plaçant la voiture à l’envers, ce n’est pas le cas. Plutôt, le calcul qui convertit le quaternion de rotation vers le tangage, lacet et roulis priorise le tangage au roulis. Il est ainsi impossible d’avoir un pourcentage élevé de roulis dans le tiers maximal.
 
-### Fullspeed
+### Fullspeed {#sec-fullspeed}
 
 Les circuits « Fullspeed » ont, en moyenne, les plus grands déplacements horizontaux (`AvgAbs-` `DisplacementHorizontal`), révolutions par minute (`AvgRPM`), vitesses vers l’avant (`AvgSpeedForward`) et vitesses absolues vers l’avant (`AvgAbsSpeedForward`), et sont plus souvent placés dans la zone de roulis parallèle aux murs (`PercentRollMiddleThird`). Ceci supporte nos hypothèses au sujet de l’étiquette « Fullspeed » et la définition dès l'installation du jeu de 2020^[Traduit, « Plein accélérateur le long du circuit. Longs virages fluides. Les boucles, la conduite sur les murs, et similaire sont communes. [...] De hautes vitesses sont attendues. » [@Eyebo2024]]. L’appui constant sur l’accélérateur élèverait les révolutions par minute du moteur et la vitesse vers l’avant (`AvgSpeedForward` et `AvgAbsSpeedForward`). Ajoutés à de hautes vitesses, des virages prolongés pousseront la voiture à traverser une plus grande distance (`AvgAbsDisplacementHorizontal`) durant son cheminement. Les balades murales pourraient, ensuite, être la cause du haussement de temps dans la zone de roulis situant la voiture près de perpendiculaire au sol (`PercentRollMiddleThird`), soit parallèle aux murs.
 
@@ -569,7 +569,7 @@ Le « SpeedTech » est principalement défini par son utilisation de turbo (`Per
 
 Le « Offroad » est caractérisé par sa moyenne de vitesses absolues latérale (`AvgAbsSpeedSideward`) et secondairement son biais moyen de pilotage (`AvgSteerBias`) ainsi que son biais moyen de vitesse latérale (`AvgSpeedSidewardBias`). Appliquant la logique des physiques du jeu, où il n’y a que peu de traction sur les routes de terre, la voiture devrait glisser souvent. Ceci n’est pas le cas, tout en ayant une importance notable pour ces caractéristiques. Les caractéristiques du « Offroad » devraient ainsi être explorées davantage afin de bien définir l’étiquette par moyen du cheminement de la voiture.
 
-Le « Fullspeed » correspond à la première demie de nos hypothèses à son sujet. Bien qu’il ait des rotations qui correspondent à nos hypothèses, il est caractérisé principalement par sa vitesse élevée. Sa vitesse moyenne vers l’avant (`AvgSpeedForward`) le caractérisant est centrée à `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["mean"]]` km/h et présente un écart type élevé de `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["sd"]]` km/h.
+Le « Fullspeed » correspond à la première demie de nos hypothèses de la @sec-fullspeed à son sujet. Bien qu’il ait des rotations qui correspondent à nos hypothèses, il est caractérisé principalement par sa vitesse élevée. Sa vitesse moyenne vers l’avant (`AvgSpeedForward`) le caractérisant est centrée à `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["mean"]]` km/h et présente un écart type élevé de `{r} filter(dfTab, Tag == "Fullspeed" & measure == "AvgSpeedForward")[["sd"]]` km/h.
 
 Le « Grass » et le « Normal » se rapprochent en leurs caractéristiques importantes. Les deux mettent l’accent sur la moyenne absolue de pilotage (`AvgAbsSteer`) et la moyenne absolue de vitesse avant (`AvgAbsSpeedForward`). Ils n’ont pas une forte importance, toutefois, les deux ont des vitesses et pilotages modérés.
 
