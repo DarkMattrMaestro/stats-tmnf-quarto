@@ -179,9 +179,9 @@ def render_all():
   
   # Bar plot
   bar_plot()
-  plt.xlabel("Impacte moyenne sur la prédiction du modèle")
-  plt.ylabel("Caractéristique (variable aplatie)")
-  plt.title("Impactes de caractéristiques selon l'étiquette")
+  plt.xlabel("Average Impact on the Model's Prediction") # Impacte moyenne sur la prédiction du modèle
+  plt.ylabel("Feature") # Caractéristique (variable aplatie)
+  plt.title("Feature Impact per Tag") # Impactes de caractéristiques selon l'étiquette
   plt.tight_layout()
   plt.savefig("rendered-figs/fig-bar.pdf")
   plt.clf()

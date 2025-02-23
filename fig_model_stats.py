@@ -30,7 +30,7 @@ def add_confusion_matrix_plot(axs, real, pred, name: str, col, accuracy: float):
   cmd.ax_.set(
     xlabel=None,
     ylabel=None,
-    title=name + f" ({accuracy * 100:.2f} %)".replace(".", ",")
+    title=name + f" ({accuracy * 100:.2f} %)"
   )
 
 FILE_NAME = "./collected-data/flat-replay-data-5rep.csv"
@@ -72,7 +72,7 @@ if True:
     axs=axs,
     real=y_test,
     pred=y_pred,
-    name="Simulacre",
+    name="Dummy",
     col=1,
     accuracy=model.score(X, y_encoded)
   )
@@ -91,7 +91,7 @@ if True:
     axs=axs,
     real=y_test,
     pred=y_pred,
-    name="Régression logistique",
+    name="Logistic Regression",
     col=2,
     accuracy=percent_correct
   )
@@ -118,7 +118,7 @@ if True:
   )
 
 
-plt.suptitle("Matrices de confusion")
+plt.suptitle("Confusion Matrices")
 
 count_max = y_test[y_test[:] == y_test[0]].shape[0]
 cbar_ax = fig.add_axes([0.05, 0.01, 0.02, 0.22])
@@ -135,7 +135,7 @@ colorbar = fig.colorbar(
 )
 colorbar.set_ticks([0, count_max])
 
-fig.supylabel("Réel")
-fig.supxlabel("Prédite")
+fig.supylabel("Real")
+fig.supxlabel("Predicted")
 plt.savefig("rendered-figs/fig-model-stats.pdf")
 # plt.show()
