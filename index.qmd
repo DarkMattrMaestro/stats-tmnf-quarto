@@ -1,10 +1,10 @@
 ---
-title: Classification de toute allure!
-subtitle: Une analyse de la relation entre l’étiquette et le cheminement de circuits dans Trackmania Nations Forever utilisant la classification
+title: ---No Title---
+subtitle: On the relation between Tags and Racing Paths of Trackmania Nations Forever Maps using Classification methods
 highlight-style: github
 crossref:
   fig-prefix: Figure
-  tbl-prefix: Tableau
+  tbl-prefix: Table
   ref-hyperlink: true
 authors:
   - name: Nicolas Kmita
@@ -16,7 +16,7 @@ bibliographystyle: apa
 nocite: |
   @*
 notebook-links: false
-lang: fr
+lang: en
 tbl-cap-location: bottom
 format:
   titlepage-pdf:
@@ -222,31 +222,29 @@ norm2 <- function(x, na.rm = FALSE) (x - min(x, na.rm = na.rm)) / (max(x, na.rm 
 normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 ```
 
-# Glossaire
+<!-- # Glossaire -->
 
-\textbf{API}\quad{} Une API, c'est-à-dire une interface de programmation d’applications, est l’interface entre un programme et un autre. Dans le cas de cet article, l’API de TMNF-X est l’interface utilisée pour communiquer avec la base de données de TMNF-X.
-
-\quad
-
-\textbf{Étiquette}\quad{} L’étiquette, ou « tag » en anglais, agit comme descripteur principal d’un circuit. Il n’y a pas de définitions officielles des différentes étiquettes de Trackmania Nations Forever, toutefois, l’installation Trackmania 2020 a été fournie quelques définitions des mêmes étiquettes. Les définitions fournies pour Trackmania 2020 ne sont pas compatibles avec TMNF en raison des différences majeures entre les deux installations.
-
-Le nom étiquette peut mener à confusion en discutant de modèles de classification puisqu’il y a la classification à classes multiples et à étiquettes multiples. Les deux catégories de modèles sont entièrement différentes. Le modèle d’amplification de gradients que nous utilisons plus tard dans ce rapport utilise des classes multiples. Ainsi, l’utilisation du terme « étiquette » en discutant du modèle fait référence aux étiquettes de Trackmania et non des étiquettes par rapport aux statistiques.
+\textbf{API}\quad{} An API, or Application-Program Interface, is an interface between a program and another. We primarily reference TMNF-X's API which allows communication with TMNF-X's database.
 
 \quad
 
-\textbf{TMNF}\quad{} TMNF est l’abréviation du titre Trackmania Nations Forever, le jeu de course d’arcade analysé dans ce rapport.
+\textbf{Tag}\quad{} A Tag is a map's primary descriptor. While definitions for each Tag do exist for the newer Trackmania 2020 game, those definitions are not fully compatible with Trackmania Nations Forever which lacks such defitions.
 
 \quad
 
-\textbf{TMNF-X}\quad{} Le site Internet a pour but de partager, entre joueurs, les créations reliées à Trackmania Nations Forever.
+\textbf{TMNF}\quad{} TMNF is the abbreviation for Trackmania Nations Forever, the arcade racing game on which this work is focused.
 
 \quad
 
-\textbf{Trackmania 2020}\quad{} L’installation du jeu Trackmania publié en 2020.
+\textbf{TMNF-X}\quad{} TMNF-X is a website facilitating the act of sharing, between players, user-made Trackmania Nations Forever content, such as maps.
 
 \quad
 
-\textbf{Rediffusion}\quad{} Une rediffusion du chemin que parcourt un joueur. Aussi appelée « replay ».
+\textbf{Trackmania 2020}\quad{} The installment of the Trackmania series published in 2020.
+
+\quad
+
+\textbf{Replay}\quad{} A replay of the racing path taken by a player, stored as a `.Replay.GBX` file.
 
 # Introduction {#sec-intro}
 
@@ -317,20 +315,19 @@ Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, O
 \centering
   \begin{tabular}{ll}
   \toprule
-  Étiquette & Raison d'exclusion \\
+  Tag & Exclusion Reason \\
   \midrule
-  Stunt & Le but n’est pas la vitesse, mais plutôt un score de cascade. \\[10pt]
-  Maze  & Le but est de trouver le bon chemin et, ayant plusieurs chemins \\
-        & valides, le circuit n’est souvent pas ordonné. \\[10pt]
-  Laps  & Le même circuit est complété plus d’une fois. \\[10pt]
-  RPG   & L’étiquette comporte majoritairement des circuits durant des \\
-        & heures de suite, ayant des différences de quelques heures \\
-        & entre chaque record. \\[10pt]
-  Trial & L’étiquette est définie par la difficulté extrême et la longue \\
-        & durée des circuits (iBazztyB, et al, s. d.). \\
+  Stunt & The goal is not speed, rather a stunt score. \\[10pt]
+  Maze  & The goal is to find the best path and, having multiple valid \\
+        & paths, the maps are often not ordered. \\[10pt]
+  Laps  & The same map is completed more than once. \\[10pt]
+  RPG   & The Tag is primarily composed of maps lasting hours straight, \\
+        & with differences of a couple hours between each record. \\[10pt]
+  Trial & The Tag is known for its extreme difficulty and longue \\
+        & completion times (iBazztyB, et al, s. d.). \\
   \bottomrule
   \end{tabular}
-\caption{Les raisons d’exclusion d’étiquettes de l’échantillon.}
+\caption{Reasons for the exclusion of Tags from the sampleset.}
 \label{Exclusions}
 \end{table}
 
@@ -646,32 +643,96 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 \textbf{}\quad{} 
 
-## Variables aplaties {#sec-annex-c}
+{{< pagebreak >}}
+
+<!-- ## Flattened Variables {#sec-annex-c} -->
 
 \newcommand{\vardef}[3]{\textbf{#1} \textcolor{gray}{$\in$ #3}\quad #2}
 
-\vardef{AvgAbsDisplacementHorizontal}{Le déplacement horizontal absolu moyen (en une unité de temps).}{$[0,\infty[$}
+\vardef{AvgAbsDisplacementHorizontal}{The average absolute horizontal displacement per unit of time.}{$[0,\infty[$}
 
-\vardef{AvgAbsDisplacementY}{Le déplacement vertical absolu moyen (en une unité de temps).}{$[0,\infty[$}
+\vardef{AvgAbsDisplacementY}{The average absolute vertical displacement per unit of time.}{$[0,\infty[$}
 
-\vardef{AvgRPM}{La moyenne des révolutions par minute du moteur de la voiture.}{$[0,\infty[$}
+\vardef{AvgRPM}{The average of the motor's Revolutions per Minute (RPM).}{$[0,\infty[$}
 
-\vardef{AvgSteerBias}{La moyenne du biais du pilotage, en pourcentage. Si le nombre d’entrées de droite équivaut à ceux de gauche, la valeur est 0. Si l’entrée de gauche ou de droite est tenue le long du cheminement, la valeur est 1.}{$[0,1]$}
+\vardef{AvgSteerBias}{The average steering bias, expressed as a percentage. If the number of left key presses is equivalent to that of the right, the value is 0; they cancel out. If one of either directional keys is held throughout the replay, the value is 1.}{$[0,1]$}
 
-\vardef{AvgAbsSteer}{La moyenne du pilotage, sans différenciation de direction, en pourcentage.}{$[0,1]$}
+\vardef{AvgAbsSteer}{The average steering amount, without distinction for direction, expressed as a percentage.}{$[0,1]$}
 
-\vardef{AvgSpeedForward}{La moyenne de la vitesse avant. Une vitesse vers l’avant est positive et une vitesse reculée est négative.}{$]-\infty,\infty[$}
+\vardef{AvgSpeedForward}{The average speed forward. Speed forward is positive while speed backward is negative.}{$]-\infty,\infty[$}
 
-\vardef{AvgAbsSpeedForward}{La moyenne absolue des vitesses avant.}{$[0,\infty[$}
+\vardef{AvgAbsSpeedForward}{The average speed, without distinction for direction.}{$[0,\infty[$}
 
-\vardef{AvgSpeedSidewardBais}{La moyenne absolue du biais de la vitesse latérale de la voiture. Si la somme des vitesses latérales vers la gauche équivaut à la somme de ceux de droite, la valeur est 0.}{$[0,\infty[$}
+\vardef{AvgSpeedSidewardBais}{The average lateral speed biais, without distinction for direction. If the leftward speeds cancel out the rightward speeds, the value is 0.}{$[0,\infty[$}
 
-\vardef{AvgAbsSpeedSideward}{La moyenne absolue des vitesses latérales.}{$[0,\infty[$}
+\vardef{AvgAbsSpeedSideward}{The average lateral speed, without distinction for direction.}{$[0,\infty[$}
 
-\vardef{AvgSpeedSidewardOppSteer}{L'inclinaison moyenne de l'opposition des directions de la vitesse latérale et du pilotage. La valeur tend vers 1 lorsqu’ils sont du même signe et vers -1 lorsqu’ils sont de signes différents.}{$[-1, 1]$}
+\vardef{AvgSpeedSidewardOppSteer}{The average tendency of directional oposition between lateral speed and steering. The value tends towards 1 when both are of the same sign, and towards -1 when they are of differing signs.}{$[-1, 1]$}
 
-\vardef{PercentPitch——Third}{Le pourcentage des d’unités de temps où le tangage absolu se trouve dans le tiers désigné, soit le premier, deuxième ou troisième tiers.}{$[0, 1]$}
+\vardef{PercentPitch——Third}{The percentage of time units in which the car's pitch falls within a given third, that being the lower, middle or upper third.}{$[0, 1]$}
 
-\vardef{PercentRoll——Third}{Le pourcentage des d’unités de temps où le roulis absolu se trouve dans le tiers désigné, soit le premier, deuxième ou troisième tiers.}{$[0, 1]$}
+\vardef{PercentRoll——Third}{The percentage of time units in which the car's roll falls within a given third, that being the lower, middle or upper third.}{$[0, 1]$}
 
-\vardef{PercentTurbo}{Le pourcentage d’unités de temps où la voiture est sous l’effet d’un turbo.}{$[0, 1]$}
+\vardef{PercentTurbo}{The percentage of time units in which the car is under the effect of a turbo.}{$[0, 1]$}
+
+
+
+{{< pagebreak >}}
+
+
+
+
+_______________Introduction_______________
+
+Trackmania Nations Forever — TMNF — is an arcade racing game that is often the subject of statistical analyses by players such as JstAnothrVirtuoso [@JstAnothr] and Yosh [@Yosh], as well as by projects such as Linesight [@Linesight].
+
+Players can build their own maps, as well as publish them on platforms such as Trackmania Nations Forever Exchange, abbreviated to TMNF-X [@TMNFX]. Authors categorize their maps into a set of Tags, which act as descriptors of the general style and goal of a given map. It is worth noting that Tags are not given exact definitions — each author may interpret a Tag differently when assigning it —, and that more than one tag may be assigned to a given map. Tags may be “Fullspead,” “LOL,” or a certain few others.
+
+Authors must use their subjective interpretation of the differences between each Tag to determine the most appropriate choice. It is, therefore, worth questioning what primary characteristics of the car’s motion and path influence an author’s Tag choice.
+
+
+
+
+____________Methodology__________________
+
+This study’s population consists of maps published on TMNF-X that have only one assigned Tag, that do not require game modifications such as TMUnlimiter, and that are of type “Race.” The population size is, thus, approximately 600 000 maps [@TMNFXStats].
+
+*Table 2.1*
+Five Tags, seen in Table 2.1, are excluded since they either go against the goal of this study, could not reasonably be analysed within given time constraints, or both simultaneously. Eight tags remain: {list of tags}.
+
+
+The data collected for this observational study is, first, stratified by each map’s Tag, randomly choosing 1113 maps per stratum. Then, each map’s record — that being the Replay with the lowest finish time — is taken by means of TMNF-X’s API. Only maps with five or more submitted replays are considered. These two, final conditions aim to reduce the number of partial-effort replays entering the sampleset, thus allowing better representation of the map’s true path.
+
+After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annexes 2 and 3 to view the anonymized, collected data.
+
+
+
+
+______________________The Models____________________________
+
+We use a multi-class gradient boosting model — more specifically, XGBoost — as our primary model due to its numerous advantages for the particularities of this study. A logistic regression model is, then, used as a point of reference of simpler models. The last model, the dummy, serves as a minimal point of reference. This model’s exactitude equates to the mathematical expectation of randomly guessing the Tag, that is, (𝐸(𝑋) = 1/8 = 12,50% ). Thus, a model that performs worse than the dummy model is less representative than guessing.
+
+[Fig 4.2]
+
+Figure 4.2 demonstrates the three models’ exactitudes by means of confusion matrices. Note that a perfect model would have no incorrectly assigned Tag and would, thus, form a perfect diagonal from the top left to the bottom right.
+
+As expected, the dummy model, which always predicts the same Tag, is but minimally representative. The logistic regression model presents a better representativity, with a diagonal line starting to form. The gradient boosting model surpasses both previous models, forming a nearly complete diagonal, well correlated. The only Tag that is often erroneously predicted is “LOL.”
+
+
+
+
+____________________Analysis______________________
+
+
+
+
+
+
+________________________________________________
+
+
+
+
+____________________Improvements / Future Work_______________________
+
+
