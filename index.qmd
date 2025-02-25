@@ -246,7 +246,7 @@ normalized_flat_data <- flat_data %>% mutate_if(is.numeric, norm2)
 
 \textbf{Replay}\quad{} A replay of the racing path taken by a player, stored as a `.Replay.GBX` file.
 
-# Introduction {#sec-intro}
+<!-- # Introduction {#sec-intro} -->
 
 Trackmania Nations Forever est la neuvième installation dans la série de jeux vidéo Trackmania. Ce jeu de course d’arcade, sortie en 2008, n’a que quatre entrées possibles: avancer, reculer, tourner vers la gauche, et tourner vers la droite. C’est ainsi un jeu très abordable pour des débutants. Il y a pourtant diverses fonctionnalités internes qui lui donnent un plafond de compétences très élevé.
 
@@ -256,7 +256,7 @@ Les joueurs peuvent créer leurs propres circuits, ainsi que de les publier sur 
 
 Les étiquettes sont donc choisies selon l’opinion subjective de l’auteur des étiquettes les plus appropriées. Les auteurs utilisent leur interprétation des différences entre les caractéristiques de chaque étiquette de circuit. Il est ainsi à se demander quelles caractéristiques principales du cheminement de la voiture influencent l’étiquette du circuit. Cette étude explore les relations entre le cheminement de la voiture et l’étiquette du circuit.
 
-## Définir un joueur compétent {#sec-competent}
+<!-- ## Définir un joueur compétent {#sec-competent} -->
 
 Il faut d’abord définir les joueurs compétents, ceux auxquels les rediffusions seront tirées.
 
@@ -270,15 +270,15 @@ Nous avons choisi de filtrer selon le nombre de joueurs ayant soumis une rediffu
 
 Il est à noter qu’il se pourrait, toutefois, que plus de cinq joueurs débutants décident, par chance ou par exprès, de soumettre leurs records sur le même circuit.
 
-## Questions
+<!-- ## Questions -->
 
 Cette section couvre les questions provoquant l’étude actuelle.
 
-### Exploration pré-modèle
+<!-- ### Exploration pré-modèle -->
 
 Il est fort probable que certaines techniques soient discernables avec les variations de variables récoltées. Une telle technique pourrait être la « grass-slide », où la voiture est positionnée à 90° et fait un virage agressif [@Tunachopps]. Dans ce cas, nous estimons une hausse de vitesse angulaire et de vitesse latérale comparée au restant du circuit. D’autres techniques/bogues potentiellement discernables seraient la « edge-bogue », la « uber-bogue » et la « nose-bogue » qui changent drastiquement le vecteur vitesse^[Pour une démonstration, voir la vidéo par Kimura et al.]. Un aperçu de la distribution de bogues ou autres provoquant de grands changements sera visible par des graphiques à violons multiples de la différence maximale et moyenne de vecteur vitesse selon l’étiquette et de la différence maximale et moyenne de vitesse latérale selon l’étiquette. Sachant que la définition de l’étiquette « PressForward » dans Trackmania 2020 indique la présence d’acrobaties normalement impossibles manuellement, il est probable que de tels changements drastiques de vitesse soient présents.
 
-### Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis}
+<!-- ### Quel modèle de classification servira le mieux ? {#sec-which-model-hypothesis} -->
 
 Plusieurs méthodes de classification de points de données existent, ayant tous leurs cas d’utilisation, avantages et désavantages différents. Pour le cas de la classification du cheminement dans une étiquette, il y a quatre exigences principales.
 
@@ -296,7 +296,7 @@ Afin de déterminer le modèle le plus représentatif, les modèles peuvent êtr
 
 Un modèle de simulacre sera d’abord utilisé afin d’assigner un point de départ. Un modèle de régression logistique sera, ensuite, utilisé comme modèle simple et souvent efficace. Finalement, un modèle d’amplification de gradients est prévu être le plus représentatif.
 
-### Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+<!-- ### Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ? -->
 
 Utilisant les définitions fournies pour Trackmania 2020 comme base, nous croyons que l’étiquette « Fullspeed » pourrait être différentiable par la vitesse vers l’avant élevée en raison de l’appui constant sur l’accélérateur et des virages prolongés [@Eyebo2024], le roulis en raison des « wallrides » et le déplacement total en raison du peu de virages courts.
 
@@ -305,7 +305,7 @@ Le « Tech » et le « SpeedTech » se distingueraient par leur grand nombre de 
 La vérification de ces hypothèses se fait par moyen d’une analyse du modèle explicable décrite dans la [Section @sec-which-model-hypothesis].
 
 
-# Méthodologie {#sec-method}
+<!-- # Méthodologie {#sec-method} -->
 
 La population de cette étude est comprise des circuits publiés sur TMNF-X [@TMNFX] ayant une seule étiquette assignée, et ne nécessitant aucune modification du jeu telle que TMUnlimiter [@TomekUnlimiter]. Ces circuits sont également du type « Race », puisque c’est le seul type permettant une course habituelle. La taille de la population sera ainsi d’environ 600 000 circuits^[Ceci est une approximation selon le nombre total de circuits [@TMNFXStats].]. Le record mondial sur chaque circuit en est inclus.
 
@@ -333,13 +333,13 @@ Passant à l’échantillon, seules les étiquettes { \textcolor{gray}{Normal, O
 
 Les données récoltées de cette étude observationnelle sont d’abord stratifiées selon l’étiquette de chaque circuit, choisissant aléatoirement ≥1113 circuits par strate. Ceci permet d’atteindre et dépasser la taille minimale pseudo-magique de 30 échantillons tout en ne prenant pas une durée non raisonnable à décortiquer les fichiers avec le programme de l'[Annexe -@sec-annex-a]. Ensuite, le record sur chaque circuit, soit la rediffusion ayant le temps de terminaison le plus bas, est tiré dès l’API du site TMNF-X. Seuls les circuits ayant plus de cinq rediffusions soumis sur TMNF-X sont considérés. Ces deux dernières conditions visent à diminuer le nombre de rediffusions à moitié effort entrant dans l’échantillon, ce qui permet une meilleure représentativité du chemin du circuit, comme décrit dans la @sec-competent. Après l’échantillonnage, les rediffusions sont analysées^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] afin de ressortir les métadonnées et calculer d’autres renseignements utiles, soit de procurer la variable dépendante et les variables indépendantes et confondantes. L’[Annexe -@sec-annex-a] présente le programme appliquant la stratégie d’échantillonnage et d’analyse^[Dans le sens de décortiquer le fichier, ou « parse » en anglais.] de rediffusions décrite^[Notez qu’il est possible de voir les résultats sans exécuter le code en visionnant le fichier `MainCodebase.ipynb`.].
 
-## Sources des données
+<!-- ## Sources des données -->
 
 Les données de chaque circuit et rediffusion sont tirées dès le serveur de TMNF-X. L’étiquette est indiquée directement dans les informations de chaque circuit; la durée du circuit se trouve dans les informations extraites de la rediffusion; puis le restant des données sont ressorties de chaque échantillon de l’état du jeu^[Trackmania Nations Forever sauvegarde un aperçu approximatif du jeu à chaque 100 millisecondes dans chaque fichier de rediffusion.]. Un aperçu plus détaillé des variables se trouve dans l’[Annexe -@sec-annex-b].
 
 TMNF-X est à la fois une source primaire et secondaire. Des données telles que le type de circuit sont tirées dès l’API de TMNF-X, ce qui lui rend une source secondaire. D’autres données sont récoltées directement dès les fichiers de rediffusion des circuits stockés sur TMNF-X^[Les fichiers de rediffusion sont stockés sur les serveurs de TMNF-X, mais l’API de TMNF-X n’expose pas les données de ces rediffusions.], ce qui le rend également une source primaire.
 
-## Validité des données récoltés du jeu
+<!-- ## Validité des données récoltés du jeu -->
 
 Puisque les données sont extraites d’un fichier créé par le jeu lui-même^[Après avoir complété un circuit, TMNF permet de sauvegarder une rediffusion afin de visionner de nouveau le cheminement qu’a pris un joueur. Cette rediffusion est stockée sous forme de fichier « .Replay.Gbx ».], elles devraient être très similaires à ce qu’interprète le jeu.
 
@@ -347,7 +347,7 @@ Toutefois, l’utilisation d’un outil d’extraction majoritairement écrit pa
 
 Il y a également certains calculs lors de la récolte des données qui pourraient influer d’autres variations. Un tel calcul sert à convertir le quaternion de rotation de la voiture en tangage, lacet et roulis, soit vers l’espace Euler. Utilisant l’arc tangent et l’arc sinus, avec des nombres à point décimal flottant, des déviations minimes en raison d’arrondissement erroné pourraient survenir [@FloatingPoint].
 
-## Entraînement des modèles prédictifs
+<!-- ## Entraînement des modèles prédictifs -->
 
 Les données hiérarchiques, soit contenues dans des échantillons de temps, sont aplaties afin de pouvoir être traitées par les modèles. Des caractéristiques principales, soit les variables de l’[Annexe -@sec-annex-c], sont calculées d’après les variables extraits de TMNF-X et les fichiers de rediffusions, soit les variables de l’[Annexe -@sec-annex-b].
 
@@ -356,9 +356,9 @@ Ces données sont échantillonnées également entre chaque étiquette. Le nombr
 Les données sont d’abord séparées en groupes d'entraînement et de test. Ceci prévient le surajustement des modèles sur les données d’entraînement. L’utilisation de données externes de ceux qui servent à entraîner donne un indice de ce qu’a vraiment compris le modèle. Le but n’est pas d’entraîner des modèles qui mémorisent les réponses, mais plutôt d’entraîner des modèles pouvant suivre des motifs et généraliser; interpoler et extrapoler.
 
 
-# Analyse {#sec-analyse}
+<!-- # Analyse {#sec-analyse} -->
 
-## Exploration pré-modèle
+<!-- ## Exploration pré-modèle -->
 
 En premier lieu, il n’y a aucune valeur manquante. Les échantillons sont récoltés dès TMNF-X qui, avant d’accepter une soumission de rediffusion ou de circuit, assure sa validité. La présence de fichier corrompu est donc rare, n’apparaissant aucune fois lors de l’échantillonnage. De plus, les cas où l’API de TMNF-X répond à la requête de fichier avec une erreur sont gérés par le programme de l’[Annexe -@sec-annex-a]. Si une requête renvoie continuellement des erreurs, le circuit est sauté puisqu’aucune information ne peut être récoltée. Le manque de valeurs manquantes suggère ainsi le bon fonctionnement du programme d’échantillonnage.
 
@@ -436,31 +436,31 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 
 ```
 
-### Le variant {#sec-variant}
+<!-- ### Le variant {#sec-variant} -->
 
 Débutant avec des impressions générales, les circuits « PressForward » ont les plus grandes variances. Ce motif suggère que cette étiquette contient des circuits qui diffèrent grandement entre eux. Ceci est en accord avec notre hypothèse originale selon laquelle la variance serait présente dû à des acrobaties extrêmes. La présence d’acrobaties où la voiture roulerait dans l’air est probablement ce qui a engendré les variations des déplacements horizontaux (`AvgAbsDisplacementHorizontal`) et verticaux (`AvgAbsDisplacementY`), des vitesses vers l’avant (`AvgSpeedForward`) et latérale (`AvgAbsSpeedSideward`), et de l’orientation moyenne de la voiture (`PercentPitch——Third` et `PercentRoll——Third`), démontrées dans la @fig-violin-facet.
 
 Il est également notable que les circuits « PressForward » aient des biais de pilotage (`AvgSteerBias`) et des pilotages totaux (`AvgAbsSteer`) qui varient largement. Si les circuits de cette étiquette suivent exactement le nom — seulement appuyer la touche avant —, il n’y aurait aucun biais et aucun pilotage. Ceci n’est pas le cas, mais il y a également la possibilité qu’une touche directionnelle soit tenue le long du circuit. Dans ce cas, le biais et le pilotage seraient chacun soit 0% ou 100%. Ceci n’est également pas toujours le cas: les variables sont distribuées d’une manière non binaire. Il y a ainsi des joueurs qui modifient leurs entrées lors de leur cheminement. Il est donc plus difficile de déterminer un motif pouvant identifier un circuit « PressForward » au moyen d’un cheminement.
 
-### L’impossibilité {#sec-impossible}
+<!-- ### L’impossibilité {#sec-impossible} -->
 
 La seule variable sans variance est le pourcentage de roulis se situant dans le tiers le plus haut (`PercentRollUpperThird`). Bien que ceci paraisse être en raison d’un manque de cheminements aberrants plaçant la voiture à l’envers, ce n’est pas le cas. Plutôt, le calcul qui convertit le quaternion de rotation vers le tangage, lacet et roulis priorise le tangage au roulis. Il est ainsi impossible d’avoir un pourcentage élevé de roulis dans le tiers maximal.
 
-### Fullspeed {#sec-fullspeed}
+<!-- ### Fullspeed {#sec-fullspeed} -->
 
 Les circuits « Fullspeed » ont, en moyenne, les plus grands déplacements horizontaux (`AvgAbs-` `DisplacementHorizontal`), révolutions par minute (`AvgRPM`), vitesses vers l’avant (`AvgSpeedForward`) et vitesses absolues vers l’avant (`AvgAbsSpeedForward`), et sont plus souvent placés dans la zone de roulis parallèle aux murs (`PercentRollMiddleThird`). Ceci supporte nos hypothèses au sujet de l’étiquette « Fullspeed » et la définition dès l'installation du jeu de 2020^[Traduit, « Plein accélérateur le long du circuit. Longs virages fluides. Les boucles, la conduite sur les murs, et similaire sont communes. [...] De hautes vitesses sont attendues. » [@Eyebo2024]]. L’appui constant sur l’accélérateur élèverait les révolutions par minute du moteur et la vitesse vers l’avant (`AvgSpeedForward` et `AvgAbsSpeedForward`). Ajoutés à de hautes vitesses, des virages prolongés pousseront la voiture à traverser une plus grande distance (`AvgAbsDisplacementHorizontal`) durant son cheminement. Les balades murales pourraient, ensuite, être la cause du haussement de temps dans la zone de roulis situant la voiture près de perpendiculaire au sol (`PercentRollMiddleThird`), soit parallèle aux murs.
 
-### Circuits techniques
+<!-- ### Circuits techniques -->
 
 Nous avons posé l’hypothèse que les circuits ayant les étiquettes « Tech » et « SpeedTech » se distingueraient par des pilotages et vitesses pointant souvent dans des sens inverses. Ceci est, en effet, le cas, visible dans la variable `AvgSpeedSidewardOppSteer`; les deux étiquettes ont des moyennes de moyennes^[C’est la moyenne de moyennes.] de vitesse latérale opposant le pilotage plus élevées comparées aux autres étiquettes.
 
 Plus intrigant encore, et que nous n’avons pas eu comme hypothèse: ces deux étiquettes ont des distributions similaires, se différenciant de manière prévisible. La « SpeedTech » réside à des vitesses (`AvgSpeedForward` et `AvgAbsSpeedForward`), RPMs (`AvgRPM`), durées en turbo (`PercentTurbo`) et déplacements (`AvgAbsDisplacementHorizontal` et `AvgAbsDisplacementY`) moyens légèrement plus hauts que les circuits « Tech », comme ce que suggère l’utilisation du mot « Speed ». Le « Tech », quant à lui, a plus de pilotage (`AvgAbsSteer`). Notez que, dans le jeu, faire des virages serrés, ou même déraper, ralenti la vitesse de la voiture. Les physiques du jeu soutiennent donc que l’augmentation de montant de pilotage du « Tech » réduit sa vitesse préférée, et inversement pour le « SpeedTech ». Les deux styles se basant sur la technique sont donc fortement similaires, se différenciant principalement par leurs caractéristiques de vitesse préférée.
 
-### Le grass-slide
+<!-- ### Le grass-slide -->
 
 Nous avons eu l’hypothèse que l’étiquette « Grass » se distinguerait par une hausse de vitesse angulaire et de vitesse latérale. Les distributions de la variable `AvgAbsSpeedSideward`, ou la vitesse latérale absolue moyenne, supportent ceci. La moyenne de celui-ci pour les circuits « Grass » est la plus élevée parmi les autres étiquettes.
 
-## Quel modèle de classification est le plus représentatif ?
+<!-- ## Quel modèle de classification est le plus représentatif ? -->
 
 Nous avons décidé d’utiliser un modèle d’amplification de gradients à classes multiples comme modèle principal, tel que décrit dans la @sec-which-model-hypothesis. Les paramètres de ce modèle ont été raffinés afin de l’optimiser. En premier lieu, la profondeur maximale de l’arbre est de cinq afin de prévenir le surajustement du modèle aux données d'entraînement. La mesure d’évaluation que le modèle cherche à optimiser est la perte logistique multiclasse, ayant comme calcul, pour chaque variable individuellement,
 $$L_{log}(y,p) = -\left(y\ln{}(p) + \left(1 - y\right)\ln{}\left(1 - p\right)\right)$$
@@ -474,7 +474,7 @@ Le dernier modèle, soit le modèle de simulacre, sert comme point de référenc
 
 Bien que le modèle le plus complexe semblerait meilleur de première vue, il faut le vérifier. La @fig-model-stats démontre l’exactitude des trois modèles par moyen de matrices de confusions. Notez qu’un modèle parfait n’aurait aucune étiquette mal assignée, et formerait donc une ligne diagonale du haut gauche au bas droit. Notez également que les matrices de confusion sont formées avec les données de test, et non les données d’entraînement, afin de mieux démontrer sa représentativité sur de nouvelles données.
 
-![Les matrices de confusion des trois modèles statistiques utilisés: un simulacre simple, une régression logistique, et un amplification de gradients (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
+![Correlation matrices of the three statistical models: a dummy, a logistic regression, and a gradient booster (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
 
 Comme attendu, le modèle de simulacre, qui prédit toujours la même étiquette, n’a que peu de représentativité. Le modèle de régression logistique présente une meilleure représentativité; une ligne diagonale est quelque peu visible. Toutefois, les étiquettes « Fullspeed », « LOL » et « PressForward » sont prédites incorrectement pour plus de la moitié de l’échantillon de test. Le « Tech » est le plus souvent bien prédit. Le modèle d’amplification de gradients surpasse les deux modèles précédents, formant une ligne presque entièrement diagonale, bien corrélée. La seule étiquette qui est très souvent mal prédite est le « LOL ».
 
@@ -548,7 +548,7 @@ report_pivot_df %>%
 
 Nous pouvons constater que le rappel a eu les plus grandes augmentations par le changement du modèle de régression logistique vers l’amplification de gradients. Tandis que la précision voit une augmentation maximale d’environ $30,91\%$ (voir l’étiquette « Grass »), le rappel voit des augmentations d’environ $49,64\%$ et $55,99\%$ pour les étiquettes « PressForward » et « FullSpeed » respectivement. Ceci suggère que la complexité supplémentaire a permis au modèle d’amplification de gradient à extraire des motifs moins évidents pour des étiquettes précises. Décrit visuellement, le modèle aurait découvert des motifs qui peuvent nettoyer une rangée des matrices de confusion de la @fig-model-stats à la fois.
 
-## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ?
+<!-- ## Que peut être déduit au sujet des affectants de l’étiquette résultante grâce aux modèles ? -->
 
 En utilisant la technique d’explication SHAP sur le modèle d’amplification de gradients, avec les données d’entraînement et de test, nous pouvons ressortir l’importance de chaque variable sur la prédiction. Une haute importance signifie qu’une classe est précisément définie par la caractéristique; la caractéristique est intégrale^[Pas dans le sens mathématique d’une intégrale (soit $\int$).] à la prédiction de la classe. La @fig-importance-bar présente les importances moyennes de chaque variable.
 
@@ -576,13 +576,13 @@ Finalement, « LOL » est la seule étiquette sans caractéristiques notables d�
 
 Généralement, les caractéristiques se centrant sur la rotation de la voiture à un instant n’informent que peu de l’étiquette actuelle. En fait, ces six caractéristiques sont les six caractéristiques les pires pour la totalité des étiquettes. Il serait donc à réviser l’inclusion et l’implémentation de ceux-ci dans le cas d’un modèle futur.
 
-# Résultats {#sec-result}
+<!-- # Résultats {#sec-result} -->
 
 En fin de compte, les étiquettes de Trackmania Nations Forever sont distinctes, mais similaires. Bien que plusieurs de nos hypothèses ont été supportées par un modèle d’amplification de gradient — soit le modèle testé le plus représentatif —, de nombreux autres constats sont ressortis. Les étiquettes de circuits techniques sont les mieux définies, suivies d’étiquettes spécialisées (« Offroad », « Fullspeed » et « Grass »). Le « LOL », le moins bien défini, contient de nombreux styles très différents, lui faisant difficile à prédire correctement.
 
 Le « Tech » préfère les virages. Son homologue, le « SpeedTech », est similaire, se différenciant par des vitesses plus élevées. Le « Fullspeed » se caractérise par de hautes vitesses. Les caractérisants du « Grass » et du « Normal » sont similaires, soit leur pilotage et leur vitesse, toutefois, leurs valeurs attendues diffèrent. Le « PressForward » est difficile à définir selon le modèle et les données en raison de hautes variances et des entrées inattendues selon le nom: le pilotage varie bien que le nom n’implique aucun pilotage. Le « Offroad » et le « LOL » nécessiteraient des recherches plus approfondies afin de conclure leurs caractéristiques principales.
 
-# Discussion {#sec-discussion}
+<!-- # Discussion {#sec-discussion} -->
 
 Les conclusions de définitions d’étiquettes décrites dans la @sec-result sont fondées sur des recherches antérieures et des données ressorties, aplaties, puis ajustées à des modèles prédictifs. Plusieurs biais peuvent ainsi entrer en jeu. En premier lieu, les caractéristiques à extraire dès les données hiérarchiques ont été déterminées subjectivement. Des projets statistiques antécédents posant sur Trackmania ont été consultés afin de réduire au maximum l’effet de cette subjectivité, toutefois, une certaine subjectivité est toujours présente. De plus, certains calculs, tels que la conversion de quaternions vers le tangage, lacet et roulis, préviennent l’obtention de certaines valeurs attendues — par exemple, le roulis au tiers supérieur (`PercentPitchUpperThird`). Ce serait ainsi préférable de générer systématiquement les caractéristiques afin de comparer méthodiquement l’importance d’un grand nombre de caractéristiques et en choisir les meilleures.
 
@@ -596,26 +596,26 @@ Avec la popularité croissante d’analyse statistique et d’application d’in
 
 
 
-# Bibliographie {#sec-bib}
+<!-- # Bibliographie {#sec-bib} -->
 
 ::: {#refs}
 :::
 
-# Annexe {#sec-annex}
+<!-- # Annexe {#sec-annex} -->
 
-## Programme d’échantillonnage {#sec-annex-a}
+<!-- ## Programme d’échantillonnage {#sec-annex-a} -->
 
 \hangindent=1.5em
 \hangafter=1
 Kmita, Nicolas. 2024. « StatsProjectTMNF ». \textit{Github}. [https://github.com/DarkMattrMaestro/Stats](https://github.com/DarkMattrMaestro/StatsProjectTMNF) [ProjectTMNF](https://github.com/DarkMattrMaestro/StatsProjectTMNF).
 
-## Données {#sec-annex-d}
+<!-- ## Données {#sec-annex-d} -->
 
 Les données aplaties utilisées pour l'entrainement et le test des modèles ainsi que des visualisations sont accessibles par [https://drive.google.com/file/d/1xbHTOrddKNGHkwa_qe0iCK4BVPzUMw5H/view?usp=sharing](https://drive.google.com/file/d/1xbHTOrddKNGHkwa_qe0iCK4BVPzUMw5H/view?usp=sharing).
 
 Un certain montant des données hiérarchiques est accessible par [https://drive.google.com/file/d/1i7JCl4wkgP5POx9V_B7-xPKqwKJ61xZp/view?usp=sharing](https://drive.google.com/file/d/1i7JCl4wkgP5POx9V_B7-xPKqwKJ61xZp/view?usp=sharing). Notez que le programme d'échantillonnage ne sauvegardait pas toutes les données hiérarchiques vers le début de l'échantillonnage. Ainsi, certains échantillons qui se trouvent dans les données aplaties sont manquants dans les données hiérarchiques.
 
-## Variables de base {#sec-annex-b}
+<!-- ## Variables de base {#sec-annex-b} -->
 
 Une majorité des variables sont extraites directement de fichiers GBX avec l’outil à source ouverte [GBX.NET2](https://github.com/BigBang1112/gbx-net) [@GBXNET]. Les spécifications de la relation de parenté entre les variables originales, soit des objets, se trouvent dans le répertoire du projet. Pour les échantillons, l’objet se nomme [CSceneVehicleCar.Sample](https://github.com/BigBang1112/gbx-net/blob/master/Src/GBX.NET/Engines/Scene/CSceneVehicleCar.Sample.cs) [@GBXNET].
 
@@ -682,57 +682,108 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 
 
-_______________Introduction_______________
+_______________ Introduction _______________
 
 Trackmania Nations Forever — TMNF — is an arcade racing game that is often the subject of statistical analyses by players such as JstAnothrVirtuoso [@JstAnothr] and Yosh [@Yosh], as well as by projects such as Linesight [@Linesight].
 
-Players can build their own maps, as well as publish them on platforms such as Trackmania Nations Forever Exchange, abbreviated to TMNF-X [@TMNFX]. Authors categorize their maps into a set of Tags, which act as descriptors of the general style and goal of a given map. It is worth noting that Tags are not given exact definitions — each author may interpret a Tag differently when assigning it —, and that more than one tag may be assigned to a given map. Tags may be “Fullspead,” “LOL,” or a certain few others.
+Players can build their own maps, as well as publish them on platforms such as Trackmania Nations Forever Exchange — TMNF-X [@TMNFX]. Authors categorize their maps into a set of Tags, which act as descriptors of the general style and goal of a given map. It is worth noting that Tags are not given exact definitions — each author may interpret a Tag differently when assigning it —, and that more than one tag may be assigned to a given map. Tags may be “Fullspead,” “LOL,” among others.
 
-Authors must use their subjective interpretation of the differences between each Tag to determine the most appropriate choice. It is, therefore, worth questioning what primary characteristics of the car’s motion and path influence an author’s Tag choice.
-
-
+Authors must use their subjective interpretation of the differences between each Tag to determine the most appropriate choice. It is, therefore, worth questioning **what primary characteristics of the car’s motion and path influence an author’s Tag choice**.
 
 
-____________Methodology__________________
 
-This study’s population consists of maps published on TMNF-X that have only one assigned Tag, that do not require game modifications such as TMUnlimiter, and that are of type “Race.” The population size is, thus, approximately 600 000 maps [@TMNFXStats].
+____________ Methodology __________________
 
-*Table 2.1*
-Five Tags, seen in Table 2.1, are excluded since they either go against the goal of this study, could not reasonably be analysed within given time constraints, or both simultaneously. Eight tags remain: {list of tags}.
+This study’s population consists of maps published on TMNF-X that have only one assigned Tag so as to allow multi-class classification, that do not require game modifications such as TMUnlimiter, and that are of type “Race.” The population size is, thus, approximately 600 000 maps [@TMNFXStats]. While multi-label classification would be preferable as it would allow maps with multiple assigned Tags to be classified, resulting complexities would exceed the scope of this project.
+
+*Table 3.1*
+
+Five Tags, seen in Table 1, are excluded since they either go against the goal of this study, could not reasonably be analysed within given time constraints, or both simultaneously. Eight tags remain: { \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} }.
 
 
 The data collected for this observational study is, first, stratified by each map’s Tag, randomly choosing 1113 maps per stratum. Then, each map’s record — that being the Replay with the lowest finish time — is taken by means of TMNF-X’s API. Only maps with five or more submitted replays are considered. These two, final conditions aim to reduce the number of partial-effort replays entering the sampleset, thus allowing better representation of the map’s true path.
 
-After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annexes 2 and 3 to view the anonymized, collected data.
+After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annex 2 to view the anonymized, collected data.
+
+This data is then separated into training and test datasets. This prevents the models from overfitting to the training data. The use of external data, other than that which is used to train the models, hints to what the models truly understood. The goal is not to train models to memorize answers, instead to train models to follow patterns and generalize; interpolate and extrapolate.
 
 
+{{< pagebreak >}}
 
+______________________ The Models ____________________________
 
-______________________The Models____________________________
+We use a multi-class gradient boosting model — more specifically, XGBoost — as our primary model due to its numerous advantages for the particularities of this study. A logistic regression model is, then, used as a point of reference of simpler models. The last model, the dummy, serves as a minimal point of reference. This model’s exactitude equates to the mathematical expectation of randomly guessing the Tag, that is, $E(X) = \frac{1}{8} = 12.50\%$. Thus, a model that performs worse than the dummy model is less representative than guessing.
 
-We use a multi-class gradient boosting model — more specifically, XGBoost — as our primary model due to its numerous advantages for the particularities of this study. A logistic regression model is, then, used as a point of reference of simpler models. The last model, the dummy, serves as a minimal point of reference. This model’s exactitude equates to the mathematical expectation of randomly guessing the Tag, that is, (𝐸(𝑋) = 1/8 = 12,50% ). Thus, a model that performs worse than the dummy model is less representative than guessing.
+[Fig 2]
 
-[Fig 4.2]
+Figure 2 demonstrates the three models’ exactitudes by means of confusion matrices. Note that a perfect model would have no incorrectly assigned Tag and would, thus, form a perfect diagonal from the top left to the bottom right.
 
-Figure 4.2 demonstrates the three models’ exactitudes by means of confusion matrices. Note that a perfect model would have no incorrectly assigned Tag and would, thus, form a perfect diagonal from the top left to the bottom right.
-
-As expected, the dummy model, which always predicts the same Tag, is but minimally representative. The logistic regression model presents a better representativity, with a diagonal line starting to form. The gradient boosting model surpasses both previous models, forming a nearly complete diagonal, well correlated. The only Tag that is often erroneously predicted is “LOL.”
-
-
-
-
-____________________Analysis______________________
+As expected, the dummy model, which always predicts the same Tag, is but minimally representative. The logistic regression model presents a better representativity, with a diagonal line beginning to form. The gradient boosting model surpasses both previous models, forming a nearly complete diagonal; it is well correlated. The only Tag that is often erroneously predicted is “LOL.”
 
 
 
 
 
+____________________ Analysis ______________________
 
-________________________________________________
-
-
-
-
-____________________Improvements / Future Work_______________________
+We determine each feature’s importance on the prediction of a Tag using the SHapley Additive exPlanations [SHAP] technique, applied on the gradient boosting model. A high importance suggests that a Tag is precisely defined by a given feature, thus the feature is integral to the prediction of the Tag.
 
 
+“Tech,” “SpeedTech,” “Offroad,” and “Fullspeed” generally have high feature importances, whereas “LOL” only minimally so. This is also reflected in Figure 4.2, wherein Tags with higher feature importances are more often correctly predicted. Basing ourselves on the model, we can conclude that “LOL” is the least well defined Tag. It is notable that the two Tags containing the word “technique” in their names are the most well-defined.
+
+“Tech” is best defined by its lateral speed (AvgAbsSpeedSideward), its steering amount (AvgAbsSteer) and its horizontal displacement (AvgAbsDisplacementHorizontal). This does not imply that these three variables must increase to predict “Tech,” rather that their proximity to expected values is prioritized by the model. Connecting data from Figure 4.1, “Tech” is best defined by direction-agnostic average lateral speeds around 4.34 km/h, average steering amounts near 71.93 % and an average displacement nearing 5.87 m.
+
+
+“SpeedTech” is primarily defined by its use of turbos (PercentTurbo) during around 3.42% of the driving. Also, its direction-agnostic steering amount is close to 71.93%. It is interesting to note that “Tech” and “SpeedTech,” which both have similar names, differentiate themselves by their focus on speed, as suggested by the use of the word “Speed.” “Tech” prefers turning, with higher steering amounts (AvgAbsSteer), whereas “SpeedTech” prefers turbos and higher, more varied, speeds (AvgSpeedForward, AvgAbsSpeedForward et AvgRPM).
+
+
+“Offroad” is characterized by its average lateral speeds (AvgAbsSpeedSideward), and secondly by its steering and lateral speed biases (AvgSteerBias, AvgSpeedSidewardBias). Applying logic from the game’s physics, where there is but minimal traction on dirt, the car should slide or drift often. This is not the case as seen in Figure 4.1, all the while these features are attributed higher importances. The main characteristics of “Offroad” maps should, therefore, be further explored so as to better define it using the car’s motion.
+
+
+“Fullspeed” is primarily characterized by high average speeds near 441.73 km/h, yet differing by large amounts as demonstrated by that feature’s standard deviation of 91.50 km/h. On average, the Tag covers a larger horizontal distance (AvgAbsDisplacementHorizontal), has higher revolutions per minute (AvgRPM) and forward speeds (AvgSpeedForward, AvgAbsSpeedForward), and is more often placed in the roll third that is parallel to walls (PercentRollMiddleThird). This supports our hypotheses as well as the definition from the newer Trackmania 2020 game, wherein “long flowing turns[,] loops, wallrides, and similar [are] common” (Tags Explained) and “high speeds [are] expected” (Tags Explained). Constant acceleration would raise the car’s RPM and forward speeds (AvgSpeedForward and AvgAbsSpeedForward). Given heightened speeds, long turns would push the car to traverse greater distances (AvgAbsDisplacementHorizontal).
+
+
+“Grass” and “Normal” focus on the amount of steering (AvgAbsSteer) and the car’s average speed (AvgAbsSpeedForward). Neither have strong importances, and both have moderate speeds and steering amounts.
+
+
+“PressForward” is primarily characterized by its direction-agnostic steering amount (AvgAbsSteer). While it may be evident to suppose that it is the only Tag in which players press only one key, numerous players perform various keypresses throughout replays. This is shown, in Figure 4.1, in its steering bias (AvgSteerBias) and amount of steering (AvgAbsSteer) which vary greatly. This suggests a contradiction between the Tag’s name and the primary driving method.
+
+In addition, “PressForward” has the largest variances in general, as seen in Figure 4.1. This pattern suggests that this Tag is assigned to maps that differ greatly from one-another. This is in agreement with our hypothesis for which variance would be present due to extreme stunts. The presence of stunts can be inferred by large variations in horizontal and vertical displacements (AvgAbsDisplacementHorizontal, AvgAbsDisplacementY), in forward and lateral speeds (AvgSpeedForward, AvgAbsSpeedSideward), and in the car’s average orientation (PercentPitch——Third, PercentRoll——Third).
+
+
+“LOL” is the only Tag for which the models did not discover notable features. Verifying with FIgure 4.2 and Table 4.1, we can ascertain that it is the least well predicted. It is, therefore, likely that the “LOL” Tag is a mish-mash of driving styles.
+
+
+_____________________ Conclusion ___________________________
+
+“Tech” prefers turns. Its counterpart, “SpeedTech,” is similar, distinguishing itself by higher speeds. “Fullspeed” is characterized by generally high speeds. The characteristics of “Grass” and “Normal” maps are similar, those being their steering amount and speed, nonetheless, their expected values differ. “PressForward” is hard to define according to the model and data due to high variances and unexpected key presses; its name implies no steering, yet steering is present. “Offroad” and “LOL” require further research to conclude their primary characteristics.
+
+Note that this is all in regards to the car’s motion and state. No data regarding track components, such as the presence of dirt or grass blocks, is collected.
+
+
+
+___________ Limitations and Biases, and Prevention Thereof _________________
+
+Some sample data is missing from the hierarchical dataset as that storage method was introduced later in the sampling stage as a form of backup; the flattened dataset is the primary dataset. The data collected through the TMNF-X API was programmatically checked for malformations, missing data points, and collection errors (such as HTTP errors).
+
+
+The use of a community-made parser for GBX files — that being GBX.NET2 —, not made by the original creators of the game, may result in slight differences in data compared to that which is actually contained within the files.
+
+Some calculations during the data collection process can result in slightly altered data. One such calculation is the conversion of the car’s rotation from quaternions to Euler-space (pitch, yaw, roll). For another, the use of floating-point numbers may incur slight deviations due to rounding (Wagner, Bill, et al 2022).
+
+A given car rotation can be represented by many different pitch-yaw-roll sets. We have given priority to pitch, then yaw, then roll — the default for GBX.NET2. This has resulted in PercentRollUpperThird always being zero, as another equivalent pitch-yaw-roll set is prioritized.
+
+
+
+______________________ Note 1 __________________________
+
+Note that no causal inference is possible since we have no control over the collected data. We cannot alter values and see the effects. Rather, due to the observational nature of this study, correlations are inferred.
+
+
+
+____________________ Improvements / Future Work _______________________
+
+Features focusing on the car’s rotation at a given moment minimally inform the selected Tag. In fact, these six features, PercentPitch——Third and PercentRoll——Third, are the six worst features in terms of feature importance. It is, therefore, worth re-evaluating the inclusion and implementation of these two features in the case of a future model.
+
+
+An improved version of the predictive model could be used to suggest Tags to new map authors on TMNF-X. Given that the model can predict but one Tag at a time, only those not knowing any Tag to assign could use it. It would, therefore, be much more useful if the model could perform multi-label classification. In addition, the model in its current form would suggest the wrong Tag to roughly one in twenty authors. The addition of other track details, such as blocks present in the map, would better serve this context and would likely increase exactitude and precision.
