@@ -372,7 +372,7 @@ Nous pouvons comparer les distributions de chaque variable selon la variable, so
 #| fig-pos: 't'
 #| echo: FALSE
 #| fig-cap: "The relative distributions (relative to the minimums and maximums) of the values of each feature, per Tag. The red bars represent the standard deviation on each side of the average."
-#| fig-width: 8
+#| fig-width: 10
 #| fig-height: 10
 #| out-width: '100%'
 #| fig-align: 'center'
@@ -555,7 +555,7 @@ Nous pouvons constater que le rappel a eu les plus grandes augmentations par le 
 
 En utilisant la technique d’explication SHAP sur le modèle d’amplification de gradients, avec les données d’entraînement et de test, nous pouvons ressortir l’importance de chaque variable sur la prédiction. Une haute importance signifie qu’une classe est précisément définie par la caractéristique; la caractéristique est intégrale^[Pas dans le sens mathématique d’une intégrale (soit $\int$).] à la prédiction de la classe. La @fig-importance-bar présente les importances moyennes de chaque variable.
 
-![L'impacte moyenne de chaque variable sur la prédiction du modèle, soit moy(|valeur SHAP|)](rendered-figs/fig-bar.pdf){#fig-importance-bar width=100% fig-align='center'}
+![The average impact of each feature on model predictions, that is, moy(|valeur SHAP|)](rendered-figs/fig-bar.pdf){#fig-importance-bar width=100% fig-align='center'}
 
 Nous pouvons constater que PercentRollUpperThird a une importance négligeable. Son maintien d’une variance nulle, mentionné dans la @sec-impossible, ne facilite aucunement la prédiction d’une étiquette.
 
@@ -678,6 +678,9 @@ Une majorité des variables sont extraites directement de fichiers GBX avec l’
 
 \vardef{PercentTurbo}{The percentage of time units in which the car is under the effect of a turbo.}{$[0, 1]$}
 
+\begin{addmargin}[150pt]{0pt}
+The relative distributions of the values of each feature, per Tag. The red bars represent the standard deviation on each side of the average.
+\end{addmargin}
 
 
 {{< pagebreak >}}
@@ -737,15 +740,15 @@ ____________________ Analysis ______________________
 We determine each feature’s importance on the prediction of a Tag using the SHapley Additive exPlanations technique, applied on the gradient boosting model. A high importance suggests that a Tag is precisely defined by a given feature, thus the feature is integral to the prediction of the Tag.
 
 
-“Tech,” “SpeedTech,” “Offroad,” and “Fullspeed” generally have high feature importances, whereas “LOL” only minimally so. This is also reflected in Figure 2, wherein Tags with higher feature importances are more often correctly predicted. Basing ourselves on the model, we can conclude that “LOL” is the least well defined Tag. It is notable that the two Tags containing the word “technique” in their names are the most well-defined.
+“Tech,” “SpeedTech,” “Offroad,” and “Fullspeed” generally have high feature importances, whereas “LOL” only minimally so. This is also reflected in Figure 1, wherein Tags with higher feature importances are more often correctly predicted. Basing ourselves on the model, we can conclude that “LOL” is the least well defined Tag. It is notable that the two Tags containing the word “technique” in their names are the most well-defined.
 
-“Tech” is best defined by its lateral speed (AvgAbsSpeedSideward), its steering amount (AvgAbsSteer) and its horizontal displacement (AvgAbsDisplacementHorizontal). This does not imply that these three variables must increase to predict “Tech,” rather that their proximity to expected values is prioritized by the model. Connecting data from Figure 4.1, “Tech” is best defined by direction-agnostic average lateral speeds around 4.34 km/h, average steering amounts near 71.93 % and an average displacement nearing 5.87 m.
-
-
-“SpeedTech” is primarily defined by its use of turbos (PercentTurbo) during around 3.42% of the driving. Also, its direction-agnostic steering amount is close to 71.93%. It is interesting to note that “Tech” and “SpeedTech,” which both have similar names, differentiate themselves by their focus on speed, as suggested by the use of the word “Speed.” “Tech” prefers turning, with higher steering amounts (AvgAbsSteer), whereas “SpeedTech” prefers turbos and higher, more varied, speeds (AvgSpeedForward, AvgAbsSpeedForward et AvgRPM).
+“Tech” is best defined by its lateral speed (AvgAbsSpeedSideward), its steering amount (AvgAbsSteer) and its horizontal displacement (AvgAbsDisplacementHorizontal). This does not imply that these three variables must increase to predict “Tech,” rather that their proximity to expected values is prioritized by the model. Connecting data from Figure 2, “Tech” is best defined by direction-agnostic average lateral speeds around 4.34 km/h, average steering amounts near 71.93% and an average displacement nearing 5.87 m.
 
 
-“Offroad” is characterized by its average lateral speeds (AvgAbsSpeedSideward), and secondly by its steering and lateral speed biases (AvgSteerBias, AvgSpeedSidewardBias). Applying logic from the game’s physics, where there is but minimal traction on dirt, the car should slide or drift often. This is not the case as seen in Figure 4.1, all the while these features are attributed higher importances. The main characteristics of “Offroad” maps should, therefore, be further explored so as to better define it using the car’s motion.
+“SpeedTech” is primarily defined by its use of turbos (PercentTurbo) during around 3.42% of the driving. Also, its direction-agnostic steering amount is close to 63.48%. It is interesting to note that “Tech” and “SpeedTech,” which both have similar names, differentiate themselves by their focus on speed, as suggested by the use of the word “Speed.” “Tech” prefers turning, with higher steering amounts (AvgAbsSteer), whereas “SpeedTech” prefers turbos and higher, more varied, speeds (AvgSpeedForward, AvgAbsSpeedForward et AvgRPM).
+
+
+“Offroad” is characterized by its average lateral speeds (AvgAbsSpeedSideward), and secondly by its steering and lateral speed biases (AvgSteerBias, AvgSpeedSidewardBias). Applying logic from the game’s physics, where there is but minimal traction on dirt, the car should slide or drift often. This is not the case as seen in Figure 2, all the while these features are attributed higher importances. The main characteristics of “Offroad” maps should, therefore, be further explored so as to better define it using the car’s motion.
 
 
 “Fullspeed” is primarily characterized by high average speeds near 441.73 km/h, yet differing by large amounts as demonstrated by that feature’s standard deviation of 91.50 km/h. On average, the Tag covers a larger horizontal distance (AvgAbsDisplacementHorizontal), has higher revolutions per minute (AvgRPM) and forward speeds (AvgSpeedForward, AvgAbsSpeedForward), and is more often placed in the roll third that is parallel to walls (PercentRollMiddleThird). This supports our hypotheses as well as the definition from the newer Trackmania 2020 game, wherein “long flowing turns[,] loops, wallrides, and similar [are] common” (Tags Explained) and “high speeds [are] expected” (Tags Explained). Constant acceleration would raise the car’s RPM and forward speeds (AvgSpeedForward and AvgAbsSpeedForward). Given heightened speeds, long turns would push the car to traverse greater distances (AvgAbsDisplacementHorizontal).
@@ -754,12 +757,12 @@ We determine each feature’s importance on the prediction of a Tag using the SH
 “Grass” and “Normal” focus on the amount of steering (AvgAbsSteer) and the car’s average speed (AvgAbsSpeedForward). Neither have strong importances, and both have moderate speeds and steering amounts.
 
 
-“PressForward” is primarily characterized by its direction-agnostic steering amount (AvgAbsSteer). While it may be evident to suppose that it is the only Tag in which players press only one key, numerous players perform various keypresses throughout replays. This is shown, in Figure 4.1, in its steering bias (AvgSteerBias) and amount of steering (AvgAbsSteer) which vary greatly. This suggests a contradiction between the Tag’s name and the primary driving method.
+“PressForward” is primarily characterized by its direction-agnostic steering amount (AvgAbsSteer). While it may be evident to suppose that it is the only Tag in which players press only one key, numerous players perform various keypresses throughout replays. This is shown, in Figure 2, in its steering bias (AvgSteerBias) and amount of steering (AvgAbsSteer) which vary greatly. This suggests a contradiction between the Tag’s name and the primary driving method.
 
-In addition, “PressForward” has the largest variances in general, as seen in Figure 4.1. This pattern suggests that this Tag is assigned to maps that differ greatly from one-another. This is in agreement with our hypothesis for which variance would be present due to extreme stunts. The presence of stunts can be inferred by large variations in horizontal and vertical displacements (AvgAbsDisplacementHorizontal, AvgAbsDisplacementY), in forward and lateral speeds (AvgSpeedForward, AvgAbsSpeedSideward), and in the car’s average orientation (PercentPitch——Third, PercentRoll——Third).
+In addition, “PressForward” has the largest variances in general, as seen in Figure 2. This pattern suggests that this Tag is assigned to maps that differ greatly from one-another. This is in agreement with our hypothesis for which variance would be present due to extreme stunts. The presence of stunts can be inferred by large variations in horizontal and vertical displacements (AvgAbsDisplacementHorizontal, AvgAbsDisplacementY), in forward and lateral speeds (AvgSpeedForward, AvgAbsSpeedSideward), and in the car’s average orientation (PercentPitch——Third, PercentRoll——Third).
 
 
-“LOL” is the only Tag for which the models did not discover notable features. Verifying with FIgure 4.2 and Table 4.1, we can ascertain that it is the least well predicted. It is, therefore, likely that the “LOL” Tag is a mish-mash of driving styles.
+“LOL” is the only Tag for which the models did not discover notable features. Verifying with Figures 1 and 2, we can ascertain that it is the least well predicted. It is, therefore, likely that the “LOL” Tag is a mish-mash of driving styles.
 
 
 _____________________ Conclusion ___________________________
