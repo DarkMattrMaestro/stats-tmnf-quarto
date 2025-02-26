@@ -773,7 +773,7 @@ Note that this is all in regards to the car’s motion and state. No data regard
 
 
 
-___________ Limitations and Biases, and Prevention Thereof _________________
+<!-- ___________ Limitations and Biases, and Prevention Thereof _________________
 
 Some sample data is missing from the hierarchical dataset as that storage method was introduced later in the sampling stage as a form of backup; the flattened dataset is the primary dataset. The data collected through the TMNF-X API was programmatically checked for malformations, missing data points, and collection errors (such as HTTP errors).
 
@@ -782,8 +782,10 @@ The use of a community-made parser for GBX files — that being GBX.NET2 —, no
 
 Some calculations during the data collection process can result in slightly altered data. One such calculation is the conversion of the car’s rotation from quaternions to Euler-space (pitch, yaw, roll). For another, the use of floating-point numbers may incur slight deviations due to rounding (Wagner, Bill, et al 2022).
 
-A given car rotation can be represented by many different pitch-yaw-roll sets. We have given priority to pitch, then yaw, then roll — the default for GBX.NET2. This has resulted in PercentRollUpperThird always being zero, as another equivalent pitch-yaw-roll set is prioritized.
+A given car rotation can be represented by many different pitch-yaw-roll sets. We have given priority to pitch, then yaw, then roll — the default for GBX.NET2. This has resulted in PercentRollUpperThird always being zero, as another equivalent pitch-yaw-roll set is prioritized. -->
 
+
+{{< pagebreak >}}
 
 
 ______________________ Note 1 __________________________
@@ -794,7 +796,12 @@ Note that no causal inference is possible since we have no control over the coll
 
 ____________________ Improvements / Future Work _______________________
 
-Features focusing on the car’s rotation at a given moment minimally inform the selected Tag. In fact, these six features, PercentPitch——Third and PercentRoll——Third, are the six worst features in terms of feature importance. It is, therefore, worth re-evaluating the inclusion and implementation of these two features in the case of a future model.
+A given car rotation can be represented by many different pitch-yaw-roll sets. We have given priority to pitch, then yaw, then roll — the default for GBX.NET2. This has resulted in PercentRollUpperThird always being zero, as another equivalent pitch-yaw-roll set is prioritized. This calculation should be revised.
 
+Features focusing on the car’s rotation at a given moment minimally inform the selected Tag. In fact, these six features, PercentPitch——Third and PercentRoll——Third, are the six worst features in terms of feature importance. It is, therefore, worth re-evaluating the inclusion and implementation of these two features in the case of a future model. It may, also, be worth generating features en-masse, then itteratively discarding the worst ones to be left with the best features.
 
-An improved version of the predictive model could be used to suggest Tags to new map authors on TMNF-X. Given that the model can predict but one Tag at a time, only those not knowing any Tag to assign could use it. It would, therefore, be much more useful if the model could perform multi-label classification. In addition, the model in its current form would suggest the wrong Tag to roughly one in twenty authors. The addition of other track details, such as blocks present in the map, would better serve this context and would likely increase exactitude and precision.
+The current model can predict but one Tag at a time, which massively reduces maps that can be analysed. It would be much more useful if the model could perform multi-label classification, wherein maps with multiple Tags could be properly handled.
+
+The model in its current form incorrectly predicts Tags roughly one in every five predictions. The addition of other track details, such as blocks present in the map, may increase the accuracy of a future model enough so as to be implemented as a Tag suggestion feature for authors submitting maps on TMNF-X*.
+
+*TMNF-X does not tend to add superfluous features, meaning this would likely take the form of an external tool.
