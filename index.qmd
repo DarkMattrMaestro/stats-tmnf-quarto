@@ -32,6 +32,7 @@ format:
           \usepackage{hyperref}
           \usepackage[capitalise,noabbrev]{cleveref}
           \pagenumbering{gobble}
+          \usepackage{scrextend}
       - macros.tex
     documentclass: scrreprt
     classoption: ["oneside", "open=any"]
@@ -360,6 +361,8 @@ Les données sont d’abord séparées en groupes d'entraînement et de test. Ce
 
 <!-- ## Exploration pré-modèle -->
 
+![Correlation matrices of the three statistical models: a dummy, a logistic regression, and a gradient booster (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
+
 En premier lieu, il n’y a aucune valeur manquante. Les échantillons sont récoltés dès TMNF-X qui, avant d’accepter une soumission de rediffusion ou de circuit, assure sa validité. La présence de fichier corrompu est donc rare, n’apparaissant aucune fois lors de l’échantillonnage. De plus, les cas où l’API de TMNF-X répond à la requête de fichier avec une erreur sont gérés par le programme de l’[Annexe -@sec-annex-a]. Si une requête renvoie continuellement des erreurs, le circuit est sauté puisqu’aucune information ne peut être récoltée. Le manque de valeurs manquantes suggère ainsi le bon fonctionnement du programme d’échantillonnage.
 
 Nous pouvons comparer les distributions de chaque variable selon la variable, soit le but de la @fig-violin-facet.
@@ -368,7 +371,7 @@ Nous pouvons comparer les distributions de chaque variable selon la variable, so
 #| label: fig-violin-facet
 #| fig-pos: 't'
 #| echo: FALSE
-#| fig-cap: "Les distributions relatives (relatives aux minimums et maximums) des valeurs de chaque variable selon l'étiquette. Les barres rouges représentent l'écart type distancé de la moyenne."
+#| fig-cap: "The relative distributions (relative to the minimums and maximums) of the values of each feature, per Tag. The red bars represent the standard deviation on each side of the average."
 #| fig-width: 8
 #| fig-height: 10
 #| out-width: '100%'
@@ -429,9 +432,9 @@ ggplot(flat_data_long, aes(x=Tag, y=value)) + #  %>% group_by(Tag)
 
   # Anotations
   labs(
-    title = "Distributions relatives de chaque variable",
-    x = "Étiquette",
-    y = "Valeur"
+    title = "Relative Distributions of each Feature",
+    x = "Tag",
+    y = "Value"
   )
 
 ```
@@ -474,7 +477,7 @@ Le dernier modèle, soit le modèle de simulacre, sert comme point de référenc
 
 Bien que le modèle le plus complexe semblerait meilleur de première vue, il faut le vérifier. La @fig-model-stats démontre l’exactitude des trois modèles par moyen de matrices de confusions. Notez qu’un modèle parfait n’aurait aucune étiquette mal assignée, et formerait donc une ligne diagonale du haut gauche au bas droit. Notez également que les matrices de confusion sont formées avec les données de test, et non les données d’entraînement, afin de mieux démontrer sa représentativité sur de nouvelles données.
 
-![Correlation matrices of the three statistical models: a dummy, a logistic regression, and a gradient booster (XGBoost).](rendered-figs/fig-model-stats.pdf){#fig-model-stats out-width=100% fig-align='center'}
+________
 
 Comme attendu, le modèle de simulacre, qui prédit toujours la même étiquette, n’a que peu de représentativité. Le modèle de régression logistique présente une meilleure représentativité; une ligne diagonale est quelque peu visible. Toutefois, les étiquettes « Fullspeed », « LOL » et « PressForward » sont prédites incorrectement pour plus de la moitié de l’échantillon de test. Le « Tech » est le plus souvent bien prédit. Le modèle d’amplification de gradients surpasse les deux modèles précédents, formant une ligne presque entièrement diagonale, bien corrélée. La seule étiquette qui est très souvent mal prédite est le « LOL ».
 
@@ -694,18 +697,23 @@ Authors must use their subjective interpretation of the differences between each
 
 ____________ Methodology __________________
 
-This study’s population consists of maps published on TMNF-X that have only one assigned Tag so as to allow multi-class classification, that do not require game modifications such as TMUnlimiter, and that are of type “Race.” The population size is, thus, approximately 600 000 maps [@TMNFXStats]. While multi-label classification would be preferable as it would allow maps with multiple assigned Tags to be classified, resulting complexities would exceed the scope of this project.
+**TMNF-X API ⇒ Sift ⇒ Parse & Flatten ⇒ Train/Test Split**
 
-*Table 3.1*
+\begin{addmargin}[81pt]{0pt}
+This study’s population consists of maps published on TMNF-X that have only one assigned Tag so as to allow multi-class classification, that do not require game modifications such as TMUnlimiter, and that are of type “Race.” The population size is, thus, approximately 600 000 maps (“Site Statistics,” n.d.). While multi-label classification would be preferable as it would allow maps with multiple assigned Tags to be classified, resulting complexities would exceed the scope of this project.
 
-Five Tags, seen in Table 1, are excluded since they either go against the goal of this study, could not reasonably be analysed within given time constraints, or both simultaneously. Eight tags remain: { \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} }.
+We, first, stratifiy by each map’s Tag, randomly choosing 1113 maps per stratum. Only eight of the thirteen possible Tags are used, as the others either go against the goal of this study or could not reasonably be analysed within given time constraints. The Tags selected for this study are:
 
+{ \textcolor{gray}{Normal, Offroad, Fullspeed, LOL, Tech, SpeedTech, PressForward, Grass} }
 
-The data collected for this observational study is, first, stratified by each map’s Tag, randomly choosing 1113 maps per stratum. Then, each map’s record — that being the Replay with the lowest finish time — is taken by means of TMNF-X’s API. Only maps with five or more submitted replays are considered. These two, final conditions aim to reduce the number of partial-effort replays entering the sampleset, thus allowing better representation of the map’s true path.
+Then, each map’s record — that being the Replay with the lowest finish time — is taken by means of TMNF-X’s API. Only maps with five or more submitted replays are considered. These two final conditions aim to reduce the number of partial-effort replays entering the sampleset, thus allowing better representation of the map’s true path.
 
-After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annex 2 to view the anonymized, collected data.
+After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annexes 2 and 3 to view the anonymized, collected data.
+
 
 This data is then separated into training and test datasets. This prevents the models from overfitting to the training data. The use of external data, other than that which is used to train the models, hints to what the models truly understood. The goal is not to train models to memorize answers, instead to train models to follow patterns and generalize; interpolate and extrapolate.
+\end{addmargin}
+
 
 
 {{< pagebreak >}}
@@ -714,9 +722,9 @@ ______________________ The Models ____________________________
 
 We use a multi-class gradient boosting model — more specifically, XGBoost — as our primary model due to its numerous advantages for the particularities of this study. A logistic regression model is, then, used as a point of reference of simpler models. The last model, the dummy, serves as a minimal point of reference. This model’s exactitude equates to the mathematical expectation of randomly guessing the Tag, that is, $E(X) = \frac{1}{8} = 12.50\%$. Thus, a model that performs worse than the dummy model is less representative than guessing.
 
-[Fig 2]
+[Fig 1]
 
-Figure 2 demonstrates the three models’ exactitudes by means of confusion matrices. Note that a perfect model would have no incorrectly assigned Tag and would, thus, form a perfect diagonal from the top left to the bottom right.
+Figure 1 demonstrates the three models’ exactitudes by means of confusion matrices. Note that a perfect model would have no incorrectly assigned Tag and would, thus, form a perfect diagonal from the top left to the bottom right.
 
 As expected, the dummy model, which always predicts the same Tag, is but minimally representative. The logistic regression model presents a better representativity, with a diagonal line beginning to form. The gradient boosting model surpasses both previous models, forming a nearly complete diagonal; it is well correlated. The only Tag that is often erroneously predicted is “LOL.”
 
@@ -726,10 +734,10 @@ As expected, the dummy model, which always predicts the same Tag, is but minimal
 
 ____________________ Analysis ______________________
 
-We determine each feature’s importance on the prediction of a Tag using the SHapley Additive exPlanations [SHAP] technique, applied on the gradient boosting model. A high importance suggests that a Tag is precisely defined by a given feature, thus the feature is integral to the prediction of the Tag.
+We determine each feature’s importance on the prediction of a Tag using the SHapley Additive exPlanations technique, applied on the gradient boosting model. A high importance suggests that a Tag is precisely defined by a given feature, thus the feature is integral to the prediction of the Tag.
 
 
-“Tech,” “SpeedTech,” “Offroad,” and “Fullspeed” generally have high feature importances, whereas “LOL” only minimally so. This is also reflected in Figure 4.2, wherein Tags with higher feature importances are more often correctly predicted. Basing ourselves on the model, we can conclude that “LOL” is the least well defined Tag. It is notable that the two Tags containing the word “technique” in their names are the most well-defined.
+“Tech,” “SpeedTech,” “Offroad,” and “Fullspeed” generally have high feature importances, whereas “LOL” only minimally so. This is also reflected in Figure 2, wherein Tags with higher feature importances are more often correctly predicted. Basing ourselves on the model, we can conclude that “LOL” is the least well defined Tag. It is notable that the two Tags containing the word “technique” in their names are the most well-defined.
 
 “Tech” is best defined by its lateral speed (AvgAbsSpeedSideward), its steering amount (AvgAbsSteer) and its horizontal displacement (AvgAbsDisplacementHorizontal). This does not imply that these three variables must increase to predict “Tech,” rather that their proximity to expected values is prioritized by the model. Connecting data from Figure 4.1, “Tech” is best defined by direction-agnostic average lateral speeds around 4.34 km/h, average steering amounts near 71.93 % and an average displacement nearing 5.87 m.
 
