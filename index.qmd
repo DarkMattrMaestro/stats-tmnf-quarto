@@ -1,5 +1,5 @@
 ---
-title: ---No Title---
+title: On the relation between Tags and Racing Paths of Trackmania Nations Forever Maps using Classification methods
 subtitle: On the relation between Tags and Racing Paths of Trackmania Nations Forever Maps using Classification methods
 highlight-style: github
 crossref:
@@ -711,7 +711,7 @@ We, first, stratifiy by each map’s Tag, randomly choosing 1113 maps per stratu
 
 Then, each map’s record — that being the Replay with the lowest finish time — is taken by means of TMNF-X’s API. Only maps with five or more submitted replays are considered. These two final conditions aim to reduce the number of partial-effort replays entering the sampleset, thus allowing better representation of the map’s true path.
 
-After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models. See Annexes 2 and 3 to view the anonymized, collected data.
+After sampling, the replays are parsed so as to extract meta-data and to calculate other useful information, that is, to collect the dependent variable and the independent and confounding variables. All hierarchical data, such as the position at each time step, is then flattened into a format usable by classification models.
 
 
 This data is then separated into training and test datasets. This prevents the models from overfitting to the training data. The use of external data, other than that which is used to train the models, hints to what the models truly understood. The goal is not to train models to memorize answers, instead to train models to follow patterns and generalize; interpolate and extrapolate.
@@ -751,7 +751,7 @@ We determine each feature’s importance on the prediction of a Tag using the SH
 “Offroad” is characterized by its average lateral speeds (AvgAbsSpeedSideward), and secondly by its steering and lateral speed biases (AvgSteerBias, AvgSpeedSidewardBias). Applying logic from the game’s physics, where there is but minimal traction on dirt, the car should slide or drift often. This is not the case as seen in Figure 2, all the while these features are attributed higher importances. The main characteristics of “Offroad” maps should, therefore, be further explored so as to better define it using the car’s motion.
 
 
-“Fullspeed” is primarily characterized by high average speeds near 441.73 km/h, yet differing by large amounts as demonstrated by that feature’s standard deviation of 91.50 km/h. On average, the Tag covers a larger horizontal distance (AvgAbsDisplacementHorizontal), has higher revolutions per minute (AvgRPM) and forward speeds (AvgSpeedForward, AvgAbsSpeedForward), and is more often placed in the roll third that is parallel to walls (PercentRollMiddleThird). This supports our hypotheses as well as the definition from the newer Trackmania 2020 game, wherein “long flowing turns[,] loops, wallrides, and similar [are] common” (Tags Explained) and “high speeds [are] expected” (Tags Explained). Constant acceleration would raise the car’s RPM and forward speeds (AvgSpeedForward and AvgAbsSpeedForward). Given heightened speeds, long turns would push the car to traverse greater distances (AvgAbsDisplacementHorizontal).
+“Fullspeed” is primarily characterized by high average speeds near 441.73 km/h, yet differing by large amounts as demonstrated by that feature’s standard deviation of 91.50 km/h. On average, the Tag covers a larger horizontal distance (AvgAbsDisplacementHorizontal), has higher revolutions per minute (AvgRPM) and forward speeds (AvgSpeedForward, AvgAbsSpeedForward), and is more often placed in the roll third that is parallel to walls (PercentRollMiddleThird). This supports our hypotheses as well as the definition from the newer Trackmania 2020 game, wherein “long flowing turns[,] loops, wallrides, and similar [are] common” (Eyebo [Rollins] 2024) and “high speeds [are] expected” (Eyebo [Rollins] 2024). Constant acceleration would raise the car’s RPM and forward speeds (AvgSpeedForward and AvgAbsSpeedForward). Given heightened speeds, long turns would push the car to traverse greater distances (AvgAbsDisplacementHorizontal).
 
 
 “Grass” and “Normal” focus on the amount of steering (AvgAbsSteer) and the car’s average speed (AvgAbsSpeedForward). Neither have strong importances, and both have moderate speeds and steering amounts.
@@ -805,3 +805,29 @@ The current model can predict but one Tag at a time, which massively reduces map
 The model in its current form incorrectly predicts Tags roughly one in every five predictions. The addition of other track details, such as blocks present in the map, may increase the accuracy of a future model enough so as to be implemented as a Tag suggestion feature for authors submitting maps on TMNF-X*.
 
 *TMNF-X does not tend to add superfluous features, meaning this would likely take the form of an external tool.
+
+
+{{< pagebreak >}}
+
+[@Eyebo2024]
+
+
+____Works Cited____
+
+Eyebo [Rollins]. 2024. “Tags Explained.” Trackmania 2020 Exchange. https://trackmania.exchange/threads/700/tags-explained.
+
+JstAnothrVirtuoso. 2024. “The WR Race - TMUF!” Youtube. https://www.youtube.com/watch?v=zn0h9mrIgpU.
+
+Mania.Exchange. n.d. “TMNF-X.” https://tmnf.exchange/.
+
+pb4git, et al. 2024. “I Trained an AI for 2 Years on Trackmania. It’s Breaking Records.” YouTube. https://www.youtube.com/watch?v=cUojVsCJ51I.
+
+Pivoňka, Petr, et al. n.d. “GBX.NET.” Github. https://github.com/BigBang1112/gbx-net.
+
+“Site Statistics.” n.d.Trackmania Nations Forever Exchange. https://tmnf.exchange/statistics.
+
+“Yosh.” n.d.YouTube. https://www.youtube.com/@yoshtm.
+
+
+\tiny
+Works Cited: Eyebo [Rollins]. 2024. “Tags Explained.” Trackmania 2020 Exchange. https://trackmania.exchange/threads/700/tags-explained. ; JstAnothrVirtuoso. 2024. “The WR Race - TMUF!” Youtube. https://www.youtube.com/watch?v=zn0h9mrIgpU. ; Mania.Exchange. n.d. “TMNF-X.” https://tmnf.exchange/. ; pb4git, et al. 2024. “I Trained an AI for 2 Years on Trackmania. It’s Breaking Records.” YouTube. https://www.youtube.com/watch?v=cUojVsCJ51I. ; Pivoňka, Petr, et al. n.d. “GBX.NET.” Github. https://github.com/BigBang1112/gbx-net. ; “Site Statistics.” n.d.Trackmania Nations Forever Exchange. https://tmnf.exchange/statistics. ; “Yosh.” n.d.YouTube. https://www.youtube.com/\@yoshtm.
