@@ -1,6 +1,6 @@
 ---
-title: On the relation between Tags and Racing Paths of Trackmania Nations Forever Maps using Classification methods
-subtitle: On the relation between Tags and Racing Paths of Trackmania Nations Forever Maps using Classification methods
+title: On the Relation between Tags and Racing Paths of Trackmania Nations Forever Maps Using Classification Methods
+subtitle: On the Relation between Tags and Racing Paths of Trackmania Nations Forever Maps Using Classification Methods
 highlight-style: github
 crossref:
   fig-prefix: Figure
