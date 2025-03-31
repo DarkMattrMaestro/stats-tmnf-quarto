@@ -1,6 +1,6 @@
-[![Open_Graph_Classification_de_toute_allure](https://github.com/user-attachments/assets/987759fc-6e71-442c-94ff-4bf32233e8ec)](https://101010101010101011010.github.io/stats-tmnf-quarto/Classification_de_toute_allure.pdf)
+[![Open_Graph_Classification_de_toute_allure](https://github.com/user-attachments/assets/987759fc-6e71-442c-94ff-4bf32233e8ec)](https://darkmattrmaestro.github.io/stats-tmnf-quarto/Classification_de_toute_allure.pdf)
 
-[Cliquez ici pour accéder au rapport.](https://101010101010101011010.github.io/stats-tmnf-quarto/Classification_de_toute_allure.pdf)
+[Cliquez ici pour accéder au rapport.](https://darkmattrmaestro.github.io/stats-tmnf-quarto/Classification_de_toute_allure.pdf)
 
 Les sections 4.2 et 4.3 sont les plus pertinentes.
 
