@@ -127,6 +127,14 @@ if (nchar(tinytex_root()) <= 0) {
 
 # Génération de citations
 knitr::write_bib(pkgs, prefix="", file="packages.bib", tweak=FALSE)
+
+Sys.setenv(RETICULATE_PYTHON = "./venv/Scripts/python.exe")
+```
+
+```{python}
+#| echo: true
+
+from constants import FILE_NAME, SEED
 ```
 
 ```{r}
@@ -183,7 +191,7 @@ theme_set(theme_classic())
 
 
 # Utilisation d'une graine aléatoire déterminée
-set.seed(3142)
+set.seed(py$SEED)
 
 ```
 
@@ -201,7 +209,7 @@ Mode <- function(x) {
 #| echo: FALSE
 
 flat_data <- 
-  read.csv("./collected-data/flat-replay-data-5rep.csv", header=TRUE) %>%
+  read.csv(py$FILE_NAME, header=TRUE) %>%
   mutate(
     Tag=recode(Tag,
       `0`="Normal",

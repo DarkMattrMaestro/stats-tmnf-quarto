@@ -3,7 +3,7 @@ import math
 import random
 import numpy as np
 
-def stratified_train_test_split(y_encoded, X, test_size=0.25, seed=3142, ):
+def stratified_train_test_split(y_encoded, X, test_size=0.25, seed=3142):
   """_summary_
 
   Args:

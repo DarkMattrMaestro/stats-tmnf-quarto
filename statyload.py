@@ -31,9 +31,8 @@ def add_confusion_matrix_plot(axs, real, pred, name: str, col, accuracy: float):
     title=name + f" ({accuracy * 100:.2f} %)".replace(".", ",")
   )
 
-FILE_NAME = "./collected-data/flat-replay-data-5rep.csv"
-MODEL_STORARE_DIR = "./models/"
-SEED = 3142
+# Constants
+from constants import *
 
 dataset = pd.read_csv(FILE_NAME) # For Pandas
 dataset = dataset.astype({"Tag": str})

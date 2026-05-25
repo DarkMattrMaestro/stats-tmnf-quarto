@@ -23,10 +23,7 @@ import joblib
 ###################################
 
 # Constants
-FILE_NAME = "./collected-data/flat-replay-data-5rep.csv"
-MODEL_STORARE_DIR = "./models/"
-SEED = 3142
-TEST_SIZE = 0.25
+from constants import *
 
 print("Loading Dataset...")
 
@@ -67,7 +64,7 @@ y_encoded = OrdinalEncoder().fit_transform(y)
 
 # Split dataset into training and testing datasets
 
-X_train, y_train, X_test, y_test = stratified_train_test_split(y_encoded, X)
+X_train, y_train, X_test, y_test = stratified_train_test_split(y_encoded, X, test_size=TEST_SIZE, seed=SEED)
 
 report_object = {}
 
@@ -187,7 +184,7 @@ if True:
   # Show a summary of feature importance
   # shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_type="bar", max_display=5)
   # shap.summary_plot(shap_values, features=X, feature_names=X.columns)
-  shap.summary_plot(shap_values, X_test, plot_type="bar")
+  # shap.summary_plot(shap_values, X_test, plot_type="bar")
 
 # Sauvegarder le rapport de classification
 

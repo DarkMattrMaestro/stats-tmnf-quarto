@@ -12,10 +12,8 @@ from sklearn.preprocessing import OrdinalEncoder
 
 from staty_base import stratified_train_test_split
 
-FILE_NAME = "./collected-data/flat-replay-data-5rep.csv"
-MODEL_STORARE_DIR = "./models/"
-SHAP_STORARE_DIR = "./models/shap/"
-SEED = 3142
+# Constants
+from constants import *
 
 def get_shap_values():
   dataset = pd.read_csv(FILE_NAME) # For Pandas
