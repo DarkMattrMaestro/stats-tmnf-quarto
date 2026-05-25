@@ -7,6 +7,7 @@
 # Python
 /statstmnf
 /venv
+/__pycache__
 
 # Data
 /collected-data
